@@ -1,0 +1,41 @@
+html {
+    background-color: #f1f1f1;
+}
+
+.columns.is-mobile>.column.is-menu {
+    flex: none;
+    width: 20%;
+}
+
+.shadow-box {
+    background: #fff;             
+    border-radius: 4px;           
+    box-shadow: 0 1px 6px 0 #ccc; 
+}
+
+.shadow-box .menu-label:first-child {
+    padding: 12px 0 0 12px;
+}
+
+.shadow-box .menu-label:not(:first-child) {
+    padding: 0 0 0 12px;
+}
+
+.shadow-box .menu-list li {
+    margin: 0 10px 0 10px;
+}
+
+.shadow-box .menu-list li:last-child {
+    padding-bottom: 10px;
+}
+
+.shadow-box .panel {
+    box-shadow: none;
+}
+
+.shadow-box .panel-heading {
+    border-radius: inherit;
+    background-color: #fff;
+    font-size: 1.1em;
+    font-weight: 500;
+}

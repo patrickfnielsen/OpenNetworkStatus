@@ -1,0 +1,44 @@
+@using OpenNetworkStatus.Data.Entities
+@model OpenNetworkStatus.Data.Entities.ComponentGroup
+@{
+    var worstStatus = Model.Components.Max(x => x.Status);
+    var statusName = StatusTextService.GetComponentStatus(worstStatus);
+    var statusClass = worstStatus switch
+    {
+        ComponentStatus.Operational         => "status-green",
+        ComponentStatus.PerformanceIssues   => "status-orange",
+        ComponentStatus.PartialOutage       => "status-dark-orange",
+        ComponentStatus.MajorOutage         => "status-red",
+        _                                   => "status-red"
+    };
+
+    var isGroupExpanded = false;
+    if (Model.ExpandOption == ComponentGroupExpand.Expand)
+    {
+        isGroupExpanded = true;
+    }
+    else if (Model.ExpandOption == ComponentGroupExpand.ExpandOnIssue && worstStatus > ComponentStatus.Operational)
+    {
+        isGroupExpanded = true;
+    }
+}
+
+<div class="tile component-container component-border component-group" data-js-hook="collapse">
+    <div class="inner-container is-clearfix" data-collapse-container>
+        <span class="component-name">
+            <span class="icon is-small">
+                <ion-icon name="@(isGroupExpanded ? "remove-circle-outline" : "add-circle-outline")"/>
+            </span>
+            <span>@Model.Name</span>
+        </span>
+        <span class="component-status @statusClass">@statusName</span>
+    </div>
+
+    
+    <div class="component-children @(isGroupExpanded ? "is-active" : "")">
+        @foreach (var component in Model.Components)
+        {
+            <partial name="_InnerComponent" model="component"/>
+        }
+    </div>
+</div>

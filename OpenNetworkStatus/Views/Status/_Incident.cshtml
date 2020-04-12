@@ -1,0 +1,16 @@
+@model OpenNetworkStatus.Data.Entities.Incident
+
+<div data-js-hook="incident" data-incident-id="@Model.Id">
+    <h3 class="incident-title title is-5">@Model.Title</h3>
+    
+    <div class="incident-updates" data-incident-updates="">
+        @foreach(var update in Model.Updates.OrderByDescending(x => x.CreatedOn))
+        {
+            <div class="incident-update" data-incident-update-id="@update.Id">
+                <strong>@StatusTextService.GetIncidentStatus(update.Status)</strong> - @update.Message
+                <br>
+                <small>@update.CreatedOn.ToString("MMM dd, HH:mm")</small>
+            </div>
+        }
+    </div>
+</div>

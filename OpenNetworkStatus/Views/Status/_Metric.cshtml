@@ -1,0 +1,19 @@
+@model OpenNetworkStatus.Data.Entities.Metric
+
+<div class="tile metric-container metric-border" data-js-hook="metric" data-metric-id="@Model.Id" data-metric-suffix="@Model.Suffix">
+    <div class="inner-container is-clearfix">
+        <span class="metric-name" data-metric-name="@Model.Title">@Model.Title</span>
+        
+        @if (!string.IsNullOrWhiteSpace(Model.Description))
+        {
+            <span class="icon description-icon has-tooltip-arrow has-tooltip-right" data-tooltip="@Model.Description"><ion-icon name="help-circle-outline"></ion-icon></span>
+        }
+
+        <span class="metric-last-value" data-metric-last-value="@Model.Id"></span>
+    </div>
+
+    <div class="metric-chart-container">
+        <canvas class="metric-chart" data-metric-chart="@Model.Id"></canvas>
+    </div>
+</div>
+

@@ -1,0 +1,70 @@
+﻿@model OpenNetworkStatus.Models.StatusViewModel
+@{
+    ViewData["Title"] = "Status";
+    
+    var statusClass = Model.Status switch
+    {
+        SiteStatus.AllOperational             => "status-green",
+        SiteStatus.SystemPerformanceImpacted  => "status-orange",
+        SiteStatus.PartialSystemIssues        => "status-dark-orange",
+        SiteStatus.MajorSystemIssues          => "status-red",
+        _                                     => "status-red"
+    };
+    
+}
+
+<div class="notification @statusClass">@Model.SiteStatusText</div>
+
+<div class="component-container">    
+    @foreach (var component in Model.Components)
+    {
+        <partial name="_Component" model="component"/>
+    }
+    
+    @foreach (var component in Model.ComponentGroups)
+    {
+        <partial name="_ComponentGroup" model="component"/>
+    }
+</div>
+
+@if (Model.Metrics.Any())
+{
+    <h1 class="page-title title is-6">SYSTEM METRICS</h1>
+    
+    <div class="metric-container">    
+        @foreach (var metric in Model.Metrics)
+        {
+            <partial name="_Metric" model="metric"/>
+        }
+    </div>
+}
+
+<h1 class="page-title title is-6">INCIDENTS</h1>
+
+<div class="incident-container">
+    @foreach (var day in Model.StatusDays)
+    {
+        <div class="incident-day">
+            <h2 class="incident-day-title title is-5">@day.Date.ToString("MMM dd, yyyy")</h2>
+            @foreach (var incident in day.Incidents)
+            {
+                <partial name="_Incident" model="incident"/>
+            }
+            
+            @if (!day.Incidents.Any())
+            {
+                <span>No incidents reported.</span>
+            }
+        </div>
+    }
+</div>
+
+@section Scripts
+{
+    <script>
+        document.addEventListener("DOMContentLoaded", function(){
+            Status.Metric.init();
+            Status.Collapsible.init();
+        });
+    </script>
+}

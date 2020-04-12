@@ -1,0 +1,28 @@
+version: '3.7'
+
+services:
+  network_status:
+    build: .
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5001;
+    ports:
+      - "5001:5001"
+    networks:
+      - internal
+    depends_on:
+      - database
+
+  database:
+    image: postgres:11.5-alpine
+    environment:
+      - POSTGRES_USER=status
+      - POSTGRES_PASSWORD=statuspassword
+      - POSTGRES_DB=status
+    networks:
+      - internal
+
+
+networks:
+  internal:
+    driver: bridge

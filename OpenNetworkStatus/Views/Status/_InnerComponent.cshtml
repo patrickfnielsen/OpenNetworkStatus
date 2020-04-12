@@ -1,0 +1,23 @@
+@using OpenNetworkStatus.Data.Entities
+@model OpenNetworkStatus.Data.Entities.Component
+@{
+    var statusName= StatusTextService.GetComponentStatus(Model.Status);
+    var statusClass = Model.Status switch
+    {
+        ComponentStatus.Operational         => "status-green",
+        ComponentStatus.PerformanceIssues   => "status-orange",
+        ComponentStatus.PartialOutage       => "status-dark-orange",
+        ComponentStatus.MajorOutage         => "status-red",
+        _                                   => "status-red"
+    };    
+}
+
+<div class="inner-container is-clearfix" data-js-hook="component" data-component-id="@Model.Id">
+    <span class="component-name" data-component-name="@Model.Title">@Model.Title</span>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Description))
+    {
+        <span class="icon description-icon has-tooltip-arrow has-tooltip-right" data-tooltip="@Model.Description"><ion-icon name="help-circle-outline"></ion-icon></span>
+    }
+    <span class="component-status @statusClass" data-component-staus="@Model.Status">@statusName</span>
+</div>    

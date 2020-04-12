@@ -1,0 +1,29 @@
+@model ErrorViewModel
+@{
+    ViewBag.Title = Model.StatusCode;
+    var returnUrl = @Context.Request.Query["returnurl"];
+}
+
+<section class="content">
+    <div class="error-page">
+        <h2 class="headline text-danger">@Model.StatusCode</h2>
+
+        <div class="error-content">
+            <h3><i class="fas fa-exclamation-triangle text-danger"></i> @Model.Title</h3>
+
+            <p>
+                @Model.Message
+                Click <a href="@returnUrl"> here</a> to return to the last page
+            </p>
+
+            <p class="debug-information">
+                @if (Model.ShowRequestId)
+                {
+                    <p>
+                        <strong>Request ID:</strong> <code>@Model.RequestId</code>
+                    </p>
+                }
+            </p>
+        </div>
+    </div>
+</section>
