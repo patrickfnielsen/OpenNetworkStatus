@@ -1,24 +1,20 @@
 using System.Collections.Generic;
 using OpenNetworkStatus.Data.Entities;
-using OpenNetworkStatus.Services;
-using OpenNetworkStatus.Services.StatusServices.ViewModels;
 
 namespace OpenNetworkStatus.Models
 {
     public struct StatusViewModel
     {
-        public StatusViewModel(SiteStatus status, IEnumerable<ComponentGroup> componentGroups, IEnumerable<Component> components, IEnumerable<Metric> metrics, IEnumerable<StatusDayViewModel> statusDays)
+        public StatusViewModel(SiteStatusViewModel siteStatus, IEnumerable<ComponentGroup> componentGroups, IEnumerable<Component> components, IEnumerable<Metric> metrics, IEnumerable<StatusDayViewModel> statusDays)
         {
-            Status = status;
+            SiteStatus = siteStatus;
             ComponentGroups = componentGroups;
             Components = components;
             Metrics = metrics;
             StatusDays = statusDays;
         }
 
-        public string SiteStatusText => StatusTextService.GetSiteStatus(Status);
-
-        public SiteStatus Status { get; }
+        public SiteStatusViewModel SiteStatus { get; }
         
         public IEnumerable<ComponentGroup> ComponentGroups { get; }
 

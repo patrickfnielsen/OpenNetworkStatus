@@ -4,9 +4,12 @@ using System.Net.Mime;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using OpenNetworkStatus.Services.Exceptions;
+using OpenNetworkStatus.Exceptions;
+using OpenNetworkStatus.Models;
 using OpenNetworkStatus.Services.IncidentServices;
 using OpenNetworkStatus.Services.IncidentServices.Resources;
+using OpenNetworkStatus.Services.PageServices;
+using OpenNetworkStatus.Services.PageServices.Resources;
 
 namespace OpenNetworkStatus.Controllers.Api
 {
@@ -54,15 +57,9 @@ namespace OpenNetworkStatus.Controllers.Api
         [HttpPut("{incidentId}")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateIncident([FromRoute]int incidentId, UpdateIncidentResource incident)
+        public async Task<IActionResult> UpdateIncident([FromRoute]int incidentId, AddIncidentResource incident)
         {
-            if (incidentId != incident.Id)
-            {
-                return BadRequest();
-            }
-            
             try
             {
                 await _incidentService.UpdateIncidentAsync(incidentId, incident);
@@ -91,35 +88,17 @@ namespace OpenNetworkStatus.Controllers.Api
         
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<GetIncidentResource>>> GetIncidents([FromQuery]int page = 1, [FromQuery]int limit = 50)
+        public async Task<ActionResult<PagedResponse<GetIncidentResource>>> GetIncidents([FromQuery]PaginationQuery paginationQuery)
         {
-            var result = await _incidentService.GetIncidentsAsync(page, limit);
-            return result.ToList();
-        }
-
-        [HttpGet("{incidentId}/updates")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<GetUpdateResource>>> GetIncidentUpdates([FromRoute]int incidentId)
-        {
-            var updates = await _incidentService.GetIncidentUpdatesAsync(incidentId);
-            return updates.ToList();
-        }
-        
-        [HttpGet("{incidentId}/updates/{updateId}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<GetUpdateResource>> GetIncidentUpdate([FromRoute]int incidentId, [FromRoute]int updateId)
-        {
-            var update = await _incidentService.GetIncidentUpdateAsync(updateId);
-            return update;
+            var result = await _incidentService.GetIncidentsAsync(paginationQuery.Page, paginationQuery.PerPage);
+            return PageService.CreatePaginatedResponse(paginationQuery, result.ToList());
         }
         
         [HttpPost("{incidentId}/updates")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> AddIncidentUpdate([FromRoute]int incidentId, AddUpdateResource incidentUpdate)
+        public async Task<IActionResult> AddIncidentUpdate([FromRoute]int incidentId, AddIncidentUpdateResource incidentUpdate)
         {
             try
             {
@@ -135,6 +114,46 @@ namespace OpenNetworkStatus.Controllers.Api
             {
                 return NotFound();
             }
+        }
+        
+        [HttpGet("{incidentId}/updates")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<PagedResponse<GetIncidentUpdateResource>>> GetAllIncidentUpdates([FromRoute]int incidentId, [FromQuery]PaginationQuery paginationQuery)
+        {
+            var updates = await _incidentService.GetIncidentUpdatesAsync(incidentId, paginationQuery.Page, paginationQuery.PerPage);            
+            return PageService.CreatePaginatedResponse(paginationQuery, updates);
+        }
+
+        [HttpGet("{incidentId}/updates/{updateId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<GetIncidentUpdateResource>> GetIncidentUpdate([FromRoute]int incidentId, [FromRoute]int updateId)
+        {
+            var update = await _incidentService.GetIncidentUpdateAsync(incidentId, updateId);
+            if (update == null)
+            {
+                return NotFound();
+            }
+            
+            return update;
+        }
+        
+        [HttpPut("{incidentId}/updates/{updateId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<GetIncidentUpdateResource>> UpdateIncidentUpdate([FromRoute]int incidentId, [FromRoute]int updateId, [FromBody]AddIncidentUpdateResource update)
+        {            
+            try
+            {
+                await _incidentService.UpdateIncidentUpdateAsync(incidentId, updateId, update);
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
         }
     }
 }

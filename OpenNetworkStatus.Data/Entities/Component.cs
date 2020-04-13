@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations;
+using OpenNetworkStatus.Data.Enums;
 
 namespace OpenNetworkStatus.Data.Entities
 {
@@ -8,11 +8,10 @@ namespace OpenNetworkStatus.Data.Entities
         
         public int? ComponentGroupId { get; set; }
         
-        public int Order { get; set; }
+        public int Position { get; set; }
         
         public ComponentStatus Status { get; set; }
         
-        [Required]
         public string Title { get; set; }
         
         public string Description { get; set; }

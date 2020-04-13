@@ -9,6 +9,9 @@
         <e p=".dockerignore" t="Include" />
         <e p="appsettings.Development.json" t="Include" />
         <e p="appsettings.json" t="Include" />
+        <e p="Attributes" t="Include">
+          <e p="RequiredEnumAttribute.cs" t="Include" />
+        </e>
         <e p="bin" t="ExcludeRecursive" />
         <e p="Controllers" t="Include">
           <e p="Api" t="Include">
@@ -25,8 +28,16 @@
         </e>
         <e p="docker-compose.yml" t="Include" />
         <e p="Dockerfile" t="Include" />
+        <e p="Exceptions" t="Include">
+          <e p="NotFoundException.cs" t="Include" />
+        </e>
         <e p="Models" t="Include">
+          <e p="Enums" t="Include">
+            <e p="SiteStatus.cs" t="Include" />
+          </e>
           <e p="ErrorViewModel.cs" t="Include" />
+          <e p="SiteStatusViewModel.cs" t="Include" />
+          <e p="StatusDayViewModel.cs" t="Include" />
           <e p="StatusViewModel.cs" t="Include" />
         </e>
         <e p="obj" t="ExcludeRecursive">
@@ -42,6 +53,29 @@
         <e p="Properties" t="Include">
           <e p="launchSettings.json" t="Include" />
         </e>
+        <e p="Services" t="Include">
+          <e p="EnumTextService.cs" t="Include" />
+          <e p="IncidentServices" t="Include">
+            <e p="IncidentMapper.cs" t="Include" />
+            <e p="IncidentService.cs" t="Include" />
+            <e p="Resources" t="Include">
+              <e p="IncidentResource.cs" t="Include" />
+              <e p="IncidentUpdateResource.cs" t="Include" />
+            </e>
+          </e>
+          <e p="JsonSnakeCaseNamingPolicy.cs" t="Include" />
+          <e p="PageServices" t="Include">
+            <e p="PageService.cs" t="Include" />
+            <e p="Resources" t="Include">
+              <e p="PagedResponse.cs" t="Include" />
+              <e p="PaginationQuery.cs" t="Include" />
+            </e>
+          </e>
+          <e p="StatusServices" t="Include">
+            <e p="SiteStatusCalculationService.cs" t="Include" />
+            <e p="StatusDayGenerationService.cs" t="Include" />
+          </e>
+        </e>
         <e p="Startup.cs" t="Include" />
         <e p="Views" t="Include">
           <e p="_ViewImports.cshtml" t="Include" />
@@ -54,12 +88,16 @@
             <e p="_Layout.cshtml" t="Include" />
           </e>
           <e p="Status" t="Include">
-            <e p="_Component.cshtml" t="Include" />
-            <e p="_ComponentGroup.cshtml" t="Include" />
-            <e p="_Incident.cshtml" t="Include" />
-            <e p="_InnerComponent.cshtml" t="Include" />
-            <e p="_Metric.cshtml" t="Include" />
             <e p="Index.cshtml" t="Include" />
+            <e p="Partial" t="Include">
+              <e p="_Component.cshtml" t="Include" />
+              <e p="_ComponentGroup.cshtml" t="Include" />
+              <e p="_Incident.cshtml" t="Include" />
+              <e p="_InnerComponent.cshtml" t="Include" />
+              <e p="_Metric.cshtml" t="Include" />
+              <e p="_SiteStatus.cshtml" t="Include" />
+              <e p="_StatusDay.cshtml" t="Include" />
+            </e>
           </e>
         </e>
         <e p="wwwroot" t="Include">
@@ -79,18 +117,20 @@
           <e p="AuditEntityBase.cs" t="Include" />
           <e p="Component.cs" t="Include" />
           <e p="ComponentGroup.cs" t="Include" />
-          <e p="ComponentGroupExpand.cs" t="Include" />
-          <e p="ComponentStatus.cs" t="Include" />
           <e p="DataPoint.cs" t="Include" />
           <e p="Incident.cs" t="Include" />
-          <e p="IncidentStatus.cs" t="Include" />
           <e p="IncidentUpdate.cs" t="Include" />
           <e p="Metric.cs" t="Include" />
         </e>
+        <e p="Enums" t="Include">
+          <e p="ComponentGroupOptions.cs" t="Include" />
+          <e p="ComponentStatus.cs" t="Include" />
+          <e p="IncidentStatus.cs" t="Include" />
+        </e>
         <e p="MigrationManager.cs" t="Include" />
         <e p="Migrations" t="Include">
-          <e p="20200412104457_Initial.cs" t="Include" />
-          <e p="20200412104457_Initial.Designer.cs" t="Include" />
+          <e p="20200413125635_Initial.cs" t="Include" />
+          <e p="20200413125635_Initial.Designer.cs" t="Include" />
           <e p="StatusDataContextModelSnapshot.cs" t="Include" />
         </e>
         <e p="obj" t="ExcludeRecursive">
@@ -108,42 +148,6 @@
           <e p="QueryOrdering.cs" t="Include" />
         </e>
         <e p="StatusDataContext.cs" t="Include" />
-      </e>
-      <e p="OpenNetworkStatus.Services" t="IncludeRecursive">
-        <e p="Attributes" t="Include">
-          <e p="RequiredEnumAttribute.cs" t="Include" />
-        </e>
-        <e p="bin" t="ExcludeRecursive" />
-        <e p="Exceptions" t="Include">
-          <e p="NotFoundException.cs" t="Include" />
-        </e>
-        <e p="IncidentServices" t="Include">
-          <e p="IncidentService.cs" t="Include" />
-          <e p="Resources" t="Include">
-            <e p="AddIncidentResource.cs" t="Include" />
-            <e p="AddUpdateResource.cs" t="Include" />
-            <e p="GetIncidentResource.cs" t="Include" />
-            <e p="GetUpdateResource.cs" t="Include" />
-            <e p="UpdateIncidentResource.cs" t="Include" />
-          </e>
-        </e>
-        <e p="obj" t="ExcludeRecursive">
-          <e p="Debug" t="Include">
-            <e p="netcoreapp3.1" t="Include">
-              <e p="OpenNetworkStatus.Services.AssemblyInfo.cs" t="Include" />
-            </e>
-          </e>
-        </e>
-        <e p="OpenNetworkStatus.Services.csproj" t="IncludeRecursive" />
-        <e p="SiteStatus.cs" t="Include" />
-        <e p="SiteStatusCalculationService.cs" t="Include" />
-        <e p="StatusServices" t="Include">
-          <e p="StatusDayGenerationService.cs" t="Include" />
-          <e p="ViewModels" t="Include">
-            <e p="StatusDayViewModel.cs" t="Include" />
-          </e>
-        </e>
-        <e p="StatusTextService.cs" t="Include" />
       </e>
       <e p="OpenNetworkStatus.sln" t="IncludeFlat" />
       <e p="packages" t="ExcludeRecursive" />

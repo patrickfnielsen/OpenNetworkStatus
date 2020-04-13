@@ -1,3 +1,5 @@
+using OpenNetworkStatus.Data.Enums;
+
 namespace OpenNetworkStatus.Data.Entities
 {
     public class IncidentUpdate : AuditEntityBase

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace OpenNetworkStatus.Data.Entities
 {
@@ -8,12 +7,10 @@ namespace OpenNetworkStatus.Data.Entities
     {
         public int Id { get; set; }
         
-        public int Order { get; set; }
+        public int Position { get; set; }
 
-        [Required]
         public string Title { get; set; }
         
-        [Required]
         public string Suffix { get; set; }
         
         public string Description { get; set; }

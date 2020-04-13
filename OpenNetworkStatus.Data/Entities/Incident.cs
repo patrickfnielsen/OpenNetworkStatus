@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using OpenNetworkStatus.Data.Enums;
 
 namespace OpenNetworkStatus.Data.Entities
 {
@@ -10,6 +11,8 @@ namespace OpenNetworkStatus.Data.Entities
         public string Title { get; set; }
         
         public List<IncidentUpdate> Updates { get; set; }
+        
+        public DateTime? ResolvedOn { get; set; }
 
         public void AddUpdate(IncidentStatus status, string message, StatusDataContext context = null) 
         {

@@ -7,7 +7,6 @@ using OpenNetworkStatus.Data;
 using OpenNetworkStatus.Data.Entities;
 using OpenNetworkStatus.Data.QueryObjects;
 using OpenNetworkStatus.Models;
-using OpenNetworkStatus.Services;
 using OpenNetworkStatus.Services.StatusServices;
 
 namespace OpenNetworkStatus.Controllers
@@ -31,7 +30,7 @@ namespace OpenNetworkStatus.Controllers
             var allComponents = await GetComponents();
             var metrics = await GetMetrics();
             var statusDays = await _statusDayGeneration.GetStatusForLastDaysAsync(7);
-            var siteStatus = _siteStatusCalculation.CalculateSiteStatus(allComponents);
+            var siteStatus = GetSiteStatus(allComponents);
 
             var standaloneComponents = allComponents.Where(x => x.ComponentGroupId == null);
             var vm = new StatusViewModel(siteStatus, componentGroups, standaloneComponents, metrics, statusDays);
@@ -59,6 +58,13 @@ namespace OpenNetworkStatus.Controllers
             return await _dataContext.Metrics
                 .MetricOrder()
                 .ToListAsync();
+        }
+
+        private SiteStatusViewModel GetSiteStatus(List<Component> components)
+        {
+            var siteStatus = _siteStatusCalculation.CalculateSiteStatus(components);
+
+            return new SiteStatusViewModel(siteStatus);
         }
     }
 }

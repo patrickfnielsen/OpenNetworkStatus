@@ -14,7 +14,7 @@ namespace OpenNetworkStatus.Controllers.Api
 {
     [ApiVersion("1.0")]
     [ApiController]
-    [Route("api/v{version:apiVersion}/componentgroups")]
+    [Route("api/v{version:apiVersion}/component-groups")]
     public class ComponentGroupGroupApiController : Controller
     {
         private readonly ILogger<ComponentGroupGroupApiController> _logger;

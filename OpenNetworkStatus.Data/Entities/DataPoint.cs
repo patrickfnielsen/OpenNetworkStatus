@@ -1,5 +1,4 @@
 using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace OpenNetworkStatus.Data.Entities
 {
@@ -9,10 +8,8 @@ namespace OpenNetworkStatus.Data.Entities
         
         public int MetricId { get; set; }
         
-        [Required]
         public double Value { get; set; }
         
-        [Required]
         public DateTime CreatedOn { get; set; }
     }
 }

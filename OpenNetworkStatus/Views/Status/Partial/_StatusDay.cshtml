@@ -1,0 +1,14 @@
+@model StatusDayViewModel
+
+<div class="incident-day">
+    <h2 class="incident-day-title title is-5">@Model.Date.ToString("MMM dd, yyyy")</h2>
+    @foreach (var incident in Model.Incidents)
+    {
+        <partial name="Partial/_Incident" model="incident"/>
+    }
+            
+    @if (!Model.Incidents.Any())
+    {
+        <span>No incidents reported.</span>
+    }
+</div>

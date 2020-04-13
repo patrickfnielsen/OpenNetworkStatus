@@ -1,0 +1,13 @@
+@model SiteStatusViewModel
+@{
+    var statusClass = Model.Status switch
+    {
+        SiteStatus.AllOperational             => "status-green",
+        SiteStatus.SystemPerformanceImpacted  => "status-orange",
+        SiteStatus.PartialSystemIssues        => "status-dark-orange",
+        SiteStatus.MajorSystemIssues          => "status-red",
+        _                                     => "status-red"
+    };
+}
+
+<div class="notification @statusClass">@Model.StatusText</div>

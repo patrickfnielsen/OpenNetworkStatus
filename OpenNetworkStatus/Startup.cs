@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -28,8 +29,8 @@ namespace OpenNetworkStatus
         {
             var builder = services.AddControllersWithViews().AddJsonOptions(options =>
             {
-                options.JsonSerializerOptions.IgnoreNullValues = true;
                 options.JsonSerializerOptions.Converters.Add(new DateTimeConverter());
+                options.JsonSerializerOptions.PropertyNamingPolicy = new JsonSnakeCaseNamingPolicy();
             });
             
             if (Env.IsDevelopment())
@@ -47,7 +48,9 @@ namespace OpenNetworkStatus
                 )
             );
 
+            services.AddTransient<IncidentMapper>();
             services.AddTransient<IncidentService>();
+            
             services.AddTransient<SiteStatusCalculationService>();
             services.AddTransient<StatusDayGenerationService>();
         }
