@@ -27,7 +27,7 @@ namespace OpenNetworkStatus.Services.StatusServices
             {
                 var date = DateTime.UtcNow.Date.AddDays(-i);
                 var incidents = incidentsInPeriod
-                    .Where(x => x.CreatedOn.Date == date);
+                    .Where(x => x.CreatedAt.Date == date);
                 
                 statusDays.Add(new StatusDayViewModel(date, incidents));
             }

@@ -14,9 +14,9 @@ namespace OpenNetworkStatus.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    CreatedOn = table.Column<DateTime>(nullable: false),
-                    UpdatedOn = table.Column<DateTime>(nullable: false),
-                    Order = table.Column<int>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    UpdatedAt = table.Column<DateTime>(nullable: false),
+                    Position = table.Column<int>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     ExpandOption = table.Column<int>(nullable: false)
                 },
@@ -31,9 +31,11 @@ namespace OpenNetworkStatus.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    CreatedOn = table.Column<DateTime>(nullable: false),
-                    UpdatedOn = table.Column<DateTime>(nullable: false),
-                    Title = table.Column<string>(nullable: true)
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    UpdatedAt = table.Column<DateTime>(nullable: false),
+                    Title = table.Column<string>(nullable: true),
+                    Impact = table.Column<int>(nullable: false),
+                    ResolvedAt = table.Column<DateTime>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -46,11 +48,11 @@ namespace OpenNetworkStatus.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    CreatedOn = table.Column<DateTime>(nullable: false),
-                    UpdatedOn = table.Column<DateTime>(nullable: false),
-                    Order = table.Column<int>(nullable: false),
-                    Title = table.Column<string>(nullable: false),
-                    Suffix = table.Column<string>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    UpdatedAt = table.Column<DateTime>(nullable: false),
+                    Position = table.Column<int>(nullable: false),
+                    Title = table.Column<string>(nullable: true),
+                    Suffix = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -64,12 +66,12 @@ namespace OpenNetworkStatus.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    CreatedOn = table.Column<DateTime>(nullable: false),
-                    UpdatedOn = table.Column<DateTime>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    UpdatedAt = table.Column<DateTime>(nullable: false),
                     ComponentGroupId = table.Column<int>(nullable: true),
-                    Order = table.Column<int>(nullable: false),
+                    Position = table.Column<int>(nullable: false),
                     Status = table.Column<int>(nullable: false),
-                    Title = table.Column<string>(nullable: false),
+                    Title = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -89,8 +91,8 @@ namespace OpenNetworkStatus.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    CreatedOn = table.Column<DateTime>(nullable: false),
-                    UpdatedOn = table.Column<DateTime>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    UpdatedAt = table.Column<DateTime>(nullable: false),
                     IncidentId = table.Column<int>(nullable: false),
                     Status = table.Column<int>(nullable: false),
                     Message = table.Column<string>(nullable: true)
@@ -114,7 +116,7 @@ namespace OpenNetworkStatus.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     MetricId = table.Column<int>(nullable: false),
                     Value = table.Column<double>(nullable: false),
-                    CreatedOn = table.Column<DateTime>(nullable: false)
+                    CreatedAt = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {

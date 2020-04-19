@@ -17,7 +17,7 @@ namespace OpenNetworkStatus.Data.Entities
         
         public List<DataPoint> DataPoints { get; set; }
         
-        public void AddDataPoint(double value, DateTime createdOn, StatusDataContext context = null) 
+        public void AddDataPoint(double value, DateTime createdAt, StatusDataContext context = null) 
         {            
             if (DataPoints != null)    
             {
@@ -25,7 +25,7 @@ namespace OpenNetworkStatus.Data.Entities
                 {
                     Value = value,
                     MetricId = Id,
-                    CreatedOn = createdOn
+                    CreatedAt = createdAt
                 });   
             }
             else if (context == null)
@@ -38,7 +38,7 @@ namespace OpenNetworkStatus.Data.Entities
                 {
                     Value = value,
                     MetricId = Id,
-                    CreatedOn = createdOn
+                    CreatedAt = createdAt
                 });
             }
             else                                    

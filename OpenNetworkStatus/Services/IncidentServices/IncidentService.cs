@@ -32,12 +32,14 @@ namespace OpenNetworkStatus.Services.IncidentServices
 
             var incident = new Incident
             {
-                Title = incidentResource.Title
+                Title = incidentResource.Title,
+                Impact = incidentResource.Impact,
+                ResolvedAt = incidentResource.ResolvedAt
             };
-            
+
             _dataContext.Incidents.Add(incident);
             await _dataContext.SaveChangesAsync();
-
+            
             return _mapper.ToIncidentResource(incident);
         }
         
@@ -59,15 +61,16 @@ namespace OpenNetworkStatus.Services.IncidentServices
         
         public async Task UpdateIncidentAsync(int incidentId, AddIncidentResource incidentResource)
         {
-            _logger.LogDebug("UpdateIncident: {@incidentResource}", incidentResource);
+            _logger.LogDebug("UpdateIncidentAsync: {@incidentResource}", incidentResource);
 
             var incident = new Incident
             {
                 Id = incidentId,
+                Impact = incidentResource.Impact,
                 Title = incidentResource.Title,
-                ResolvedOn = incidentResource.ResolvedOn
+                ResolvedAt = incidentResource.ResolvedAt
             };
-                        
+            
             _dataContext.Entry(incident).State = EntityState.Modified;
             
             try
@@ -105,6 +108,7 @@ namespace OpenNetworkStatus.Services.IncidentServices
                 .Include(x => x.Updates)
                 .Page(page, limit)
                 .IncidentOrder()
+                .AsNoTracking()
                 .ToListAsync();
 
             return _mapper.ToIncidentResource(incidents);
@@ -124,14 +128,14 @@ namespace OpenNetworkStatus.Services.IncidentServices
             //If the update says the issue is resolved, update the resolved date on the incident
             if (updateResource.Status == IncidentStatus.Resolved)
             {
-                incident.ResolvedOn = DateTime.UtcNow;
+                incident.ResolvedAt = DateTime.UtcNow;
             }
 
             //If the incidents resolved date is set, but the current sate is not resolved (ie if we backup because the issue is not fixed)
             //The set the resolve date to null
-            if (incident.ResolvedOn != null && updateResource.Status != IncidentStatus.Resolved)
+            if (incident.ResolvedAt != null && updateResource.Status != IncidentStatus.Resolved)
             {
-                incident.ResolvedOn = null;
+                incident.ResolvedAt = null;
             }
             
             incident.AddUpdate(updateResource.Status, updateResource.Message, _dataContext);
@@ -174,6 +178,7 @@ namespace OpenNetworkStatus.Services.IncidentServices
 
             var update = await _dataContext.IncidentUpdates
                 .Where(x => x.IncidentId == incidentId && x.Id == updateId)
+                .AsNoTracking()
                 .SingleOrDefaultAsync();
             
             if (update == null)
@@ -192,6 +197,7 @@ namespace OpenNetworkStatus.Services.IncidentServices
             var updates = await _dataContext.IncidentUpdates
                 .Where(x => x.IncidentId == incidentId)
                 .Page(page, limit)
+                .AsNoTracking()
                 .ToListAsync();
             
             if (updates == null)

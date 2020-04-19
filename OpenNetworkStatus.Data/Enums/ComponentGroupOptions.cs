@@ -2,7 +2,7 @@ namespace OpenNetworkStatus.Data.Enums
 {
     public enum ComponentGroupOptions
     {
-        AlwaysCollaps = 1,
+        AlwaysCollapse = 1,
         AlwaysExpand = 2,
         ExpandOnIssue = 3,
     }

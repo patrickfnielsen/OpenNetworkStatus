@@ -26,8 +26,8 @@ namespace OpenNetworkStatus.Services.IncidentServices.Resources
         
         public string Message { get; set; }
         
-        public DateTime CreatedOn { get; set; }
+        public DateTime CreatedAt { get; set; }
         
-        public DateTime UpdatedOn { get; set; }
+        public DateTime UpdatedAt { get; set; }
     }
 }

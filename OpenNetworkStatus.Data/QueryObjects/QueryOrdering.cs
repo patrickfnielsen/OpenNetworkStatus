@@ -29,7 +29,7 @@ namespace OpenNetworkStatus.Data.QueryObjects
         public static IQueryable<Incident> IncidentOrder(this IQueryable<Incident> queryable) 
         {
             return queryable
-                .OrderByDescending(x => x.CreatedOn)
+                .OrderByDescending(x => x.CreatedAt)
                 .ThenBy(x => x.Id);
         }
     }

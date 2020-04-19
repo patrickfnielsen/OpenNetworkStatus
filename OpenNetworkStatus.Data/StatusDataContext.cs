@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OpenNetworkStatus.Data.Entities;
 
 namespace OpenNetworkStatus.Data
@@ -18,35 +19,59 @@ namespace OpenNetworkStatus.Data
         {
             base.OnModelCreating(modelBuilder);
 
+
+            IgnoreCreatedAtOnUpdates(modelBuilder);
+            ForceUtcDateTime(modelBuilder);
+        }
+
+        private void IgnoreCreatedAtOnUpdates(ModelBuilder modelBuilder)
+        {
             modelBuilder.Entity<ComponentGroup>(builder =>
             {
-                builder.Property(e => e.CreatedOn).ValueGeneratedOnAdd()
+                builder.Property(e => e.CreatedAt).ValueGeneratedOnAdd()
                     .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
             });
 
             modelBuilder.Entity<Component>(builder =>
             {
-                builder.Property(e => e.CreatedOn).ValueGeneratedOnAdd()
+                builder.Property(e => e.CreatedAt).ValueGeneratedOnAdd()
                     .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
             });
 
             modelBuilder.Entity<Metric>(builder =>
             {
-                builder.Property(e => e.CreatedOn).ValueGeneratedOnAdd()
+                builder.Property(e => e.CreatedAt).ValueGeneratedOnAdd()
                     .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
             });
             
             modelBuilder.Entity<Incident>(builder =>
             {
-                builder.Property(e => e.CreatedOn).ValueGeneratedOnAdd()
+                builder.Property(e => e.CreatedAt).ValueGeneratedOnAdd()
                     .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
             });
             
             modelBuilder.Entity<IncidentUpdate>(builder =>
             {
-                builder.Property(e => e.CreatedOn).ValueGeneratedOnAdd()
+                builder.Property(e => e.CreatedAt).ValueGeneratedOnAdd()
                     .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
             });
+        }
+
+        private void ForceUtcDateTime(ModelBuilder modelBuilder)
+        {
+            //All dates SHOULD already be in UTC, but just in case we force them to UTC to keep the database consistent
+            var dateTimeConverter = new ValueConverter<DateTime, DateTime>(v => v, v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
+
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                foreach (var property in entityType.GetProperties())
+                {
+                    if (property.ClrType == typeof(DateTime) || property.ClrType == typeof(DateTime?))
+                    {
+                        property.SetValueConverter(dateTimeConverter);
+                    }
+                }
+            }
         }
         
         public override int SaveChanges(bool acceptAllChangesOnSuccess)
@@ -71,12 +96,12 @@ namespace OpenNetworkStatus.Data
                 var now = DateTime.UtcNow;
                 if (entry.State == EntityState.Modified)
                 {
-                    audit.UpdatedOn = now;
+                    audit.UpdatedAt = now;
                 } 
                 else if (entry.State == EntityState.Added)
                 {
-                    audit.CreatedOn = now;
-                    audit.UpdatedOn = now;
+                    audit.CreatedAt = now;
+                    audit.UpdatedAt = now;
                 }
             }
         }

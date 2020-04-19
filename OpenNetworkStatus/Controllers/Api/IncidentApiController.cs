@@ -88,10 +88,10 @@ namespace OpenNetworkStatus.Controllers.Api
         
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<PagedResponse<GetIncidentResource>>> GetIncidents([FromQuery]PaginationQuery paginationQuery)
+        public async Task<ActionResult<PagedResponse<GetIncidentResource>>> GetIncidents([FromQuery]int page, [FromQuery]int perPage)
         {
-            var result = await _incidentService.GetIncidentsAsync(paginationQuery.Page, paginationQuery.PerPage);
-            return PageService.CreatePaginatedResponse(paginationQuery, result.ToList());
+            var result = await _incidentService.GetIncidentsAsync(page, perPage);
+            return PageService.CreatePaginatedResponse(page, perPage, result.ToList());
         }
         
         [HttpPost("{incidentId}/updates")]
@@ -119,10 +119,10 @@ namespace OpenNetworkStatus.Controllers.Api
         [HttpGet("{incidentId}/updates")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<PagedResponse<GetIncidentUpdateResource>>> GetAllIncidentUpdates([FromRoute]int incidentId, [FromQuery]PaginationQuery paginationQuery)
+        public async Task<ActionResult<PagedResponse<GetIncidentUpdateResource>>> GetAllIncidentUpdates([FromRoute]int incidentId, [FromQuery]int page, [FromQuery]int perPage)
         {
-            var updates = await _incidentService.GetIncidentUpdatesAsync(incidentId, paginationQuery.Page, paginationQuery.PerPage);            
-            return PageService.CreatePaginatedResponse(paginationQuery, updates);
+            var updates = await _incidentService.GetIncidentUpdatesAsync(incidentId, page, perPage);            
+            return PageService.CreatePaginatedResponse(page, perPage, updates);
         }
 
         [HttpGet("{incidentId}/updates/{updateId}")]

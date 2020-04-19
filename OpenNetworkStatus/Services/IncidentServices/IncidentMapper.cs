@@ -17,11 +17,12 @@ namespace OpenNetworkStatus.Services.IncidentServices
             return new GetIncidentResource
             {
                 Id = incident.Id,
+                Impact = incident.Impact,
                 Title = incident.Title,
                 Updates = ToIncidentUpdateResource(incident.Updates),
-                CreatedOn = incident.CreatedOn,
-                UpdatedOn = incident.UpdatedOn,
-                ResolvedOn = incident.ResolvedOn
+                CreatedAt = incident.CreatedAt,
+                UpdatedAt = incident.UpdatedAt,
+                ResolvedAt = incident.ResolvedAt
             };
         }
 
@@ -49,8 +50,8 @@ namespace OpenNetworkStatus.Services.IncidentServices
                 Status = update.Status,
                 StatusText = EnumTextService.GetIncidentStatus(update.Status),
                 Message = update.Message,
-                CreatedOn = update.CreatedOn,
-                UpdatedOn = update.UpdatedOn
+                CreatedAt = update.CreatedAt,
+                UpdatedAt = update.UpdatedAt
             };
         }
         

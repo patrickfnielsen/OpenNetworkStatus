@@ -1,14 +1,13 @@
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Mime;
 using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using OpenNetworkStatus.Data;
-using OpenNetworkStatus.Data.Entities;
-using OpenNetworkStatus.Data.QueryObjects;
+using OpenNetworkStatus.Services.ComponentServices.Commands;
+using OpenNetworkStatus.Services.ComponentServices.Queries;
+using OpenNetworkStatus.Services.ComponentServices.Resources;
+using OpenNetworkStatus.Services.PageServices;
+using OpenNetworkStatus.Services.PageServices.Resources;
 
 namespace OpenNetworkStatus.Controllers.Api
 {
@@ -17,114 +16,88 @@ namespace OpenNetworkStatus.Controllers.Api
     [Route("api/v{version:apiVersion}/components")]
     public class ComponentApiController : Controller
     {
-        private readonly ILogger<ComponentApiController> _logger;
-        private readonly StatusDataContext _dataContext;
+        private readonly IMediator _mediator;
         
-        public ComponentApiController(ILogger<ComponentApiController> logger, StatusDataContext dataContext)
+        public ComponentApiController(IMediator mediator)
         {
-            _logger = logger;
-            _dataContext = dataContext;
+            _mediator = mediator;
         }
         
         [HttpPost]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<Component>> CreateAsync(Component component)
+        public async Task<ActionResult<ComponentResource>> CreateAsync([FromBody]AddComponentCommand componentCommand)
         {
-            _logger.LogInformation("Create Component: {@component}", component);
-
-            _dataContext.Components.Add(component);
-            await _dataContext.SaveChangesAsync();
+            var componentResource = await _mediator.Send(componentCommand);
 
             var version = Request.HttpContext.GetRequestedApiVersion().ToString();
             return CreatedAtAction(
                 nameof(GetComponent), 
-                new { componentId = component.Id, version = version },
-                component);
+                new { id = componentResource.Id, version = version },
+                componentResource);
         }
         
-        [HttpDelete("{componentId}")]
+        [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteComponent([FromRoute]int componentId)
+        public async Task<IActionResult> DeleteComponent([FromRoute]DeleteComponentCommand componentCommand)
         {
-            var component = await _dataContext.Components.FindAsync(componentId);
+            var componentResource = await _mediator.Send(componentCommand);
 
-            if (component == null)
+            if (componentResource == false)
             {
-                _logger.LogDebug("Can't find component with id: {id}", componentId);
-
                 return NotFound();
             }
-
-            _logger.LogInformation("Delete Component: {@component}", component);
-
-            _dataContext.Components.Remove(component);
-            await _dataContext.SaveChangesAsync();
 
             return NoContent();
         }
         
-        [HttpPut("{componentId}")]
+        [HttpPut("{id}")]
         [Consumes(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateComponent([FromRoute]int componentId, Component component)
+        public async Task<ActionResult<ComponentResource>> UpdateComponent([FromRoute]int id, UpdateComponentCommand componentCommand)
         {
-            if (componentId != component.Id)
+            if (id != componentCommand.Id)
             {
                 return BadRequest();
             }
-                        
-            _dataContext.Entry(component).State = EntityState.Modified;
             
-            _logger.LogInformation("Update Component: {@component}", component);
-
-            try
+            var componentResource = await _mediator.Send(componentCommand);
+            if (componentResource == null)
             {
-                await _dataContext.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException) when (!ComponentExists(componentId))
-            {
-                _logger.LogDebug("Can't find component with id: {id}", componentId);
-
                 return NotFound();
             }
 
-            return NoContent();
+            return componentResource;
         }
 
-        [HttpGet("{componentId}")]
+        [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<Component>> GetComponent([FromRoute]int componentId)
+        public async Task<ActionResult<ComponentResource>> GetComponent([FromRoute]GetComponentByIdQuery componentQuery)
         {
-            _logger.LogInformation("Get Component with id: {id}", componentId);
-
-            var result = await _dataContext.Components.FindAsync(componentId);
-
-            if (result == null)
+            var componentResource = await _mediator.Send(componentQuery);
+            if (componentResource == null)
             {
-                _logger.LogDebug("Can't find component with id: {id}", componentId);
                 return NotFound();
             }
 
-            return result;
+            return componentResource;
         }
         
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<Component>>> GetComponents([FromQuery]int page = 1, [FromQuery]int limit = 50)
+        public async Task<ActionResult<PagedResponse<ComponentResource>>> GetComponents([FromQuery]GetAllComponentsQuery componentQuery)
         {
-            var result = await _dataContext.Components
-                .Page(page, limit)
-                .ComponentOrder()
-                .ToListAsync();
-
-            return result;
+            var componentResource = await _mediator.Send(componentQuery);
+            if (componentResource == null)
+            {
+                return NotFound();
+            }
+            
+            return PageService.CreatePaginatedResponse(componentQuery.Page, componentQuery.Limit, componentResource);
         }
-
-        private bool ComponentExists(long id) => _dataContext.Components.Any(e => e.Id == id);
     }
 }

@@ -1,14 +1,14 @@
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Mime;
 using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using OpenNetworkStatus.Data;
 using OpenNetworkStatus.Data.Entities;
-using OpenNetworkStatus.Data.QueryObjects;
+using OpenNetworkStatus.Services.ComponentGroupServices.Commands;
+using OpenNetworkStatus.Services.ComponentGroupServices.Queries;
+using OpenNetworkStatus.Services.ComponentGroupServices.Resources;
+using OpenNetworkStatus.Services.PageServices;
+using OpenNetworkStatus.Services.PageServices.Resources;
 
 namespace OpenNetworkStatus.Controllers.Api
 {
@@ -17,114 +17,87 @@ namespace OpenNetworkStatus.Controllers.Api
     [Route("api/v{version:apiVersion}/component-groups")]
     public class ComponentGroupGroupApiController : Controller
     {
-        private readonly ILogger<ComponentGroupGroupApiController> _logger;
-        private readonly StatusDataContext _dataContext;
-        
-        public ComponentGroupGroupApiController(ILogger<ComponentGroupGroupApiController> logger, StatusDataContext dataContext)
+        private readonly IMediator _mediator;
+
+        public ComponentGroupGroupApiController(IMediator mediator)
         {
-            _logger = logger;
-            _dataContext = dataContext;
+            _mediator = mediator;
         }
         
         [HttpPost]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<ComponentGroup>> CreateAsync(ComponentGroup componentGroup)
+        public async Task<ActionResult<ComponentGroup>> CreateAsync(AddComponentGroupCommand groupCommand)
         {
-            _logger.LogInformation("Create ComponentGroup: {@componentGroup}", componentGroup);
-
-            _dataContext.ComponentGroups.Add(componentGroup);
-            await _dataContext.SaveChangesAsync();
-
+            var groupResource = await _mediator.Send(groupCommand);
+            
             var version = Request.HttpContext.GetRequestedApiVersion().ToString();
             return CreatedAtAction(
                 nameof(GetComponentGroup), 
-                new { componentGroupId = componentGroup.Id, version = version },
-                componentGroup);
+                new { id = groupResource.Id, version = version },
+                groupResource);
         }
         
-        [HttpDelete("{componentGroupId}")]
+        [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteComponentGroup([FromRoute]int componentGroupId)
+        public async Task<IActionResult> DeleteComponentGroup([FromRoute]DeleteComponentGroupCommand groupCommand)
         {
-            var componentGroup = await _dataContext.ComponentGroups.FindAsync(componentGroupId);
-
-            if (componentGroup == null)
+            var groupResource = await _mediator.Send(groupCommand);
+            if (groupResource == false)
             {
-                _logger.LogDebug("Can't find componentGroup with id: {id}", componentGroupId);
-
                 return NotFound();
             }
-
-            _logger.LogInformation("Delete ComponentGroup: {@componentGroup}", componentGroup);
-
-            _dataContext.ComponentGroups.Remove(componentGroup);
-            await _dataContext.SaveChangesAsync();
 
             return NoContent();
         }
         
-        [HttpPut("{componentGroupId}")]
+        [HttpPut("{id}")]
         [Consumes(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateComponentGroup([FromRoute]int componentGroupId, ComponentGroup componentGroup)
+        public async Task<ActionResult<ComponentGroupResource>> UpdateComponentGroup([FromRoute]int id, UpdateComponentGroupCommand groupCommand)
         {
-            if (componentGroupId != componentGroup.Id)
+            if (id != groupCommand.Id)
             {
                 return BadRequest();
             }
-                        
-            _dataContext.Entry(componentGroup).State = EntityState.Modified;
             
-            _logger.LogInformation("Update ComponentGroup: {@componentGroup}", componentGroup);
-
-            try
+            var groupResource = await _mediator.Send(groupCommand);
+            if (groupResource == null)
             {
-                await _dataContext.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException) when (!ComponentGroupExists(componentGroupId))
-            {
-                _logger.LogDebug("Can't find componentGroup with id: {id}", componentGroupId);
-
                 return NotFound();
             }
 
-            return NoContent();
+            return groupResource;
         }
 
-        [HttpGet("{componentGroupId}")]
+        [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<ComponentGroup>> GetComponentGroup([FromRoute]int componentGroupId)
+        public async Task<ActionResult<ComponentGroupResource>> GetComponentGroup([FromRoute]GetComponentGroupByIdQuery groupQuery)
         {
-            _logger.LogInformation("Get ComponentGroup with id: {id}", componentGroupId);
-
-            var result = await _dataContext.ComponentGroups.FindAsync(componentGroupId);
-
-            if (result == null)
+            var groupResource = await _mediator.Send(groupQuery);
+            if (groupResource == null)
             {
-                _logger.LogDebug("Can't find componentGroup with id: {id}", componentGroupId);
                 return NotFound();
             }
 
-            return result;
+            return groupResource;
         }
         
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<ComponentGroup>>> GetComponentGroups([FromQuery]int page = 1, [FromQuery]int limit = 50)
+        public async Task<ActionResult<PagedResponse<ComponentGroupResource>>> GetComponentGroups([FromQuery]GetAllComponentGroupsQuery groupQuery)
         {
-            var result = await _dataContext.ComponentGroups
-                .Page(page, limit)
-                .ComponentGroupOrder()
-                .ToListAsync();
-
-            return result;
+            var groupResources = await _mediator.Send(groupQuery);
+            if (groupResources == null)
+            {
+                return NotFound();
+            }
+            
+            return PageService.CreatePaginatedResponse(groupQuery.Page, groupQuery.Limit, groupResources);
         }
-
-        private bool ComponentGroupExists(long id) => _dataContext.ComponentGroups.Any(e => e.Id == id);
     }
 }

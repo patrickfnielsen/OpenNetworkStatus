@@ -5,11 +5,17 @@
         };
     }
     
+    function getColor(name) {
+        let style = getComputedStyle(document.documentElement);
+        return style.getPropertyValue("--" + name).trim();
+    }
+    
     function hook(name) {
         return document.querySelectorAll("[data-js-hook='" + name + "']");
     }
     
     return {
+        getColor: getColor,
         hook: hook
     }
 })();
@@ -39,14 +45,16 @@ Status.Metric = (function() {
         });
     }
     
-    function renderChart(ctx, metricId, metricSuffix) {   
+    function renderChart(ctx, metricId, metricSuffix) {
+        let chartLineColor = Status.getColor("chart-line");
+        let chartTickColor = Status.getColor("chart-ticks");
         return new Chart(ctx, {
             type: "line",
             data: {
                 datasets: [
                     {
-                        backgroundColor: "#7a7a7a",
-                        borderColor: "#7a7a7a",
+                        backgroundColor: chartLineColor,
+                        borderColor: chartLineColor,
                         pointRadius: 0,
                         fill: false,
                         lineTension: 0,
@@ -91,7 +99,7 @@ Status.Metric = (function() {
                             },
                             source: "data",
                             padding: 1,
-                            fontColor: "#99aab5",
+                            fontColor: chartTickColor,
                             autoSkip: true,
                             autoSkipPadding: 75,
                             maxRotation: 0,
@@ -104,12 +112,12 @@ Status.Metric = (function() {
                             var firstTick = ticks[0];
                             var i, ilen, val, tick, currMajor, lastMajor;
 
-                            val = moment(ticks[0].value);
+                            val = moment.utc(ticks[0].value);
                             lastMajor = val.get(majorUnit);
 
                             for (i = 1, ilen = ticks.length; i < ilen; i++) {
                                 tick = ticks[i];
-                                val = moment(tick.value);
+                                val = moment.utc(tick.value);
                                 currMajor = val.get(majorUnit);
                                 tick.major = currMajor !== lastMajor;
                                 lastMajor = currMajor;
@@ -124,7 +132,7 @@ Status.Metric = (function() {
                         ticks: {
                             lineHeight: 3,
                             padding: 8,
-                            fontColor: "#99aab5"
+                            fontColor: chartTickColor
                         }
                     }]
                 },
@@ -222,7 +230,7 @@ Status.Metric = (function() {
             .then(result => {
                 let dataset = chart.data.datasets[0];
                 result.forEach(dataPoint => {
-                    dataset.data.push({x: moment.utc(dataPoint.createdOn), y: dataPoint.value});
+                    dataset.data.push({x: moment.utc(dataPoint.created_at), y: dataPoint.value});
                 });
 
                 if(dataset.data.length > 0) {              

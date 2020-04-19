@@ -4,8 +4,8 @@ namespace OpenNetworkStatus.Data.Entities
 {
     public class AuditEntityBase
     {
-        public DateTime CreatedOn { get; set; }
+        public DateTime CreatedAt { get; set; }
         
-        public DateTime UpdatedOn { get; set; }
+        public DateTime UpdatedAt { get; set; }
     }
 }

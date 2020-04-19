@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace OpenNetworkStatus.Services.PageServices
+namespace OpenNetworkStatus.Services.PageServices.Resources
 {
     public class PagedResponse<T>
     {

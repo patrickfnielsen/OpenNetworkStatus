@@ -26,16 +26,22 @@
         <e p="Converters" t="Include">
           <e p="DateTimeConverter.cs" t="Include" />
         </e>
-        <e p="docker-compose.yml" t="Include" />
         <e p="Dockerfile" t="Include" />
         <e p="Exceptions" t="Include">
           <e p="NotFoundException.cs" t="Include" />
+        </e>
+        <e p="Extensions" t="Include">
+          <e p="GenericTypeExtensions.cs" t="Include" />
         </e>
         <e p="Models" t="Include">
           <e p="Enums" t="Include">
             <e p="SiteStatus.cs" t="Include" />
           </e>
           <e p="ErrorViewModel.cs" t="Include" />
+          <e p="Options" t="Include">
+            <e p="CorsOptions.cs" t="Include" />
+            <e p="SiteOptions.cs" t="Include" />
+          </e>
           <e p="SiteStatusViewModel.cs" t="Include" />
           <e p="StatusDayViewModel.cs" t="Include" />
           <e p="StatusViewModel.cs" t="Include" />
@@ -54,6 +60,43 @@
           <e p="launchSettings.json" t="Include" />
         </e>
         <e p="Services" t="Include">
+          <e p="Behaviors" t="Include">
+            <e p="LoggingBehavior.cs" t="Include" />
+          </e>
+          <e p="ComponentGroupServices" t="Include">
+            <e p="Commands" t="Include">
+              <e p="AddComponentGroupCommand.cs" t="Include" />
+              <e p="AddComponentGroupCommandHandler.cs" t="Include" />
+              <e p="DeleteComponentGroupCommand.cs" t="Include" />
+              <e p="DeleteComponentGroupCommandHandler.cs" t="Include" />
+              <e p="GetComponentGroupCommand.cs" t="Include" />
+              <e p="GetComponentGroupCommandHandler.cs" t="Include" />
+              <e p="GetComponentGroupsCommand.cs" t="Include" />
+              <e p="GetComponentGroupsCommandHandler.cs" t="Include" />
+              <e p="UpdateComponentGroupCommand.cs" t="Include" />
+              <e p="UpdateComponentGroupCommandHandler.cs" t="Include" />
+            </e>
+            <e p="Resources" t="Include">
+              <e p="ComponentGroupResource.cs" t="Include" />
+            </e>
+          </e>
+          <e p="ComponentServices" t="Include">
+            <e p="Commands" t="Include">
+              <e p="AddComponentCommand.cs" t="Include" />
+              <e p="AddComponentCommandHandler.cs" t="Include" />
+              <e p="DeleteComponentCommand.cs" t="Include" />
+              <e p="DeleteComponentCommandHandler.cs" t="Include" />
+              <e p="GetComponentCommand.cs" t="Include" />
+              <e p="GetComponentCommandHandler.cs" t="Include" />
+              <e p="GetComponentsCommand.cs" t="Include" />
+              <e p="GetComponentsCommandHandler.cs" t="Include" />
+              <e p="UpdateComponentCommand.cs" t="Include" />
+              <e p="UpdateComponentCommandHandler.cs" t="Include" />
+            </e>
+            <e p="Resources" t="Include">
+              <e p="ComponentResource.cs" t="Include" />
+            </e>
+          </e>
           <e p="EnumTextService.cs" t="Include" />
           <e p="IncidentServices" t="Include">
             <e p="IncidentMapper.cs" t="Include" />
@@ -64,11 +107,11 @@
             </e>
           </e>
           <e p="JsonSnakeCaseNamingPolicy.cs" t="Include" />
+          <e p="MericServices" t="Include" />
           <e p="PageServices" t="Include">
             <e p="PageService.cs" t="Include" />
             <e p="Resources" t="Include">
               <e p="PagedResponse.cs" t="Include" />
-              <e p="PaginationQuery.cs" t="Include" />
             </e>
           </e>
           <e p="StatusServices" t="Include">
@@ -125,12 +168,13 @@
         <e p="Enums" t="Include">
           <e p="ComponentGroupOptions.cs" t="Include" />
           <e p="ComponentStatus.cs" t="Include" />
+          <e p="IncidentImpact.cs" t="Include" />
           <e p="IncidentStatus.cs" t="Include" />
         </e>
         <e p="MigrationManager.cs" t="Include" />
         <e p="Migrations" t="Include">
-          <e p="20200413125635_Initial.cs" t="Include" />
-          <e p="20200413125635_Initial.Designer.cs" t="Include" />
+          <e p="20200417093133_Initial.cs" t="Include" />
+          <e p="20200417093133_Initial.Designer.cs" t="Include" />
           <e p="StatusDataContextModelSnapshot.cs" t="Include" />
         </e>
         <e p="obj" t="ExcludeRecursive">

@@ -29,7 +29,7 @@ namespace OpenNetworkStatus.Data.Migrations
                     b.Property<int?>("ComponentGroupId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("CreatedOn")
+                    b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone");
 
@@ -45,7 +45,7 @@ namespace OpenNetworkStatus.Data.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("UpdatedOn")
+                    b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
@@ -62,7 +62,7 @@ namespace OpenNetworkStatus.Data.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<DateTime>("CreatedOn")
+                    b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone");
 
@@ -75,7 +75,7 @@ namespace OpenNetworkStatus.Data.Migrations
                     b.Property<int>("Position")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("UpdatedOn")
+                    b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
@@ -90,7 +90,7 @@ namespace OpenNetworkStatus.Data.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<DateTime>("CreatedOn")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<int>("MetricId")
@@ -113,17 +113,20 @@ namespace OpenNetworkStatus.Data.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<DateTime>("CreatedOn")
+                    b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<DateTime?>("ResolvedOn")
+                    b.Property<int>("Impact")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("ResolvedAt")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Title")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("UpdatedOn")
+                    b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
@@ -138,7 +141,7 @@ namespace OpenNetworkStatus.Data.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<DateTime>("CreatedOn")
+                    b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone");
 
@@ -151,7 +154,7 @@ namespace OpenNetworkStatus.Data.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("UpdatedOn")
+                    b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
@@ -168,7 +171,7 @@ namespace OpenNetworkStatus.Data.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<DateTime>("CreatedOn")
+                    b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone");
 
@@ -184,7 +187,7 @@ namespace OpenNetworkStatus.Data.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("UpdatedOn")
+                    b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");

@@ -10,13 +10,15 @@ namespace OpenNetworkStatus.Data.Entities
         
         public string Title { get; set; }
         
-        public List<IncidentUpdate> Updates { get; set; }
+        public IncidentImpact Impact { get; set; }
         
-        public DateTime? ResolvedOn { get; set; }
+        public List<IncidentUpdate> Updates { get; set; }
+            
+        public DateTime? ResolvedAt { get; set; }
 
         public void AddUpdate(IncidentStatus status, string message, StatusDataContext context = null) 
         {
-            UpdatedOn = DateTime.UtcNow;
+            UpdatedAt = DateTime.UtcNow;
             
             if (Updates != null)    
             {
@@ -24,8 +26,7 @@ namespace OpenNetworkStatus.Data.Entities
                 {
                     IncidentId = Id,
                     Status = status,
-                    Message = message,
-                    CreatedOn = DateTime.UtcNow
+                    Message = message
                 });   
             }
             else if (context == null)
@@ -38,8 +39,7 @@ namespace OpenNetworkStatus.Data.Entities
                 {
                     IncidentId = Id,
                     Status = status,
-                    Message = message,
-                    CreatedOn = DateTime.UtcNow
+                    Message = message
                 });
             }
             else                                    

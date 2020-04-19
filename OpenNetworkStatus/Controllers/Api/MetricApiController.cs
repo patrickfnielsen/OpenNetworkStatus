@@ -1,8 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mime;
 using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +10,11 @@ using Microsoft.Extensions.Logging;
 using OpenNetworkStatus.Data;
 using OpenNetworkStatus.Data.Entities;
 using OpenNetworkStatus.Data.QueryObjects;
+using OpenNetworkStatus.Services.MetricServices.Commands;
+using OpenNetworkStatus.Services.MetricServices.Queries;
+using OpenNetworkStatus.Services.MetricServices.Resources;
+using OpenNetworkStatus.Services.PageServices;
+using OpenNetworkStatus.Services.PageServices.Resources;
 
 namespace OpenNetworkStatus.Controllers.Api
 {
@@ -20,165 +25,120 @@ namespace OpenNetworkStatus.Controllers.Api
     {
         private readonly ILogger<MetricApiController> _logger;
         private readonly StatusDataContext _dataContext;
+        private readonly IMediator _mediator;
         
-        public MetricApiController(ILogger<MetricApiController> logger, StatusDataContext dataContext)
+        public MetricApiController(ILogger<MetricApiController> logger, StatusDataContext dataContext, IMediator mediator)
         {
             _logger = logger;
             _dataContext = dataContext;
+            _mediator = mediator;
         }
         
         [HttpPost]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<Metric>> CreateAsync(Metric metric)
+        public async Task<ActionResult<MetricResource>> CreateAsync(AddMetricCommand metricCommand)
         {
-            _logger.LogInformation("Create Metric: {@metric}", metric);
-
-            _dataContext.Metrics.Add(metric);
-            await _dataContext.SaveChangesAsync();
+            var metricResource = await _mediator.Send(metricCommand);
 
             var version = Request.HttpContext.GetRequestedApiVersion().ToString();
             return CreatedAtAction(
                 nameof(GetMetric), 
-                new { metricId = metric.Id, version = version },
-                metric);
+                new { metricId = metricResource.Id, version = version },
+                metricResource);
         }
         
-        [HttpDelete("{metricId}")]
+        [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteMetric([FromRoute]int metricId)
+        public async Task<IActionResult> DeleteMetric([FromRoute]DeleteMetricCommand metricCommand)
         {
-            var metric = await _dataContext.Metrics.FindAsync(metricId);
-
-            if (metric == null)
+            var metricResource = await _mediator.Send(metricCommand);
+            if (metricResource == false)
             {
-                _logger.LogDebug("Can't find metric with id: {id}", metricId);
-
                 return NotFound();
             }
-
-            _logger.LogInformation("Delete Metric: {@metric}", metric);
-
-            _dataContext.Metrics.Remove(metric);
-            await _dataContext.SaveChangesAsync();
 
             return NoContent();
         }
         
-        [HttpPut("{metricId}")]
+        [HttpPut("{id}")]
         [Consumes(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateMetric([FromRoute]int metricId, Metric metric)
+        public async Task<ActionResult<MetricResource>> UpdateMetric([FromRoute]int id, UpdateMetricCommand metricCommand)
         {
-            if (metricId != metric.Id)
+            if (id != metricCommand.Id)
             {
                 return BadRequest();
             }
-                        
-            _dataContext.Entry(metric).State = EntityState.Modified;
             
-            _logger.LogInformation("Update Metric: {@metric}", metric);
-
-            try
+            var metricResource = await _mediator.Send(metricCommand);
+            if (metricResource == null)
             {
-                await _dataContext.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException) when (!MetricExists(metricId))
-            {
-                _logger.LogDebug("Can't find metric with id: {id}", metricId);
-
                 return NotFound();
             }
 
-            return NoContent();
+            return metricResource;
         }
 
-        [HttpGet("{metricId}")]
+        [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<Metric>> GetMetric([FromRoute]int metricId)
+        public async Task<ActionResult<MetricResource>> GetMetric([FromRoute]GetMetricByIdQuery metricQuery)
         {
-            _logger.LogInformation("Get Metric with id: {id}", metricId);
-
-            var result = await _dataContext.Metrics.FindAsync(metricId);
-
-            if (result == null)
+            var metricResource = await _mediator.Send(metricQuery);
+            if (metricResource == null)
             {
-                _logger.LogDebug("Can't find metric with id: {id}", metricId);
                 return NotFound();
             }
 
-            return result;
+            return metricResource;
         }
         
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<Metric>>> GetMetrics([FromQuery]int page = 1, [FromQuery]int limit = 50)
+        public async Task<ActionResult<PagedResponse<MetricResource>>> GetMetrics([FromQuery]GetAllMetricsQuery metricsQuery)
         {
-            var result = await _dataContext.Metrics
-                .Page(page, limit)
-                .MetricOrder()
-                .ToListAsync();
-
-            return result;
+            var metricResources = await _mediator.Send(metricsQuery);
+            if (metricResources == null)
+            {
+                return NotFound();
+            }
+            
+            return PageService.CreatePaginatedResponse(metricsQuery.Page, metricsQuery.Limit, metricResources);
         }
         
         [HttpGet("{metricId}/datapoints")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<DataPoint>>> GetDataPoints(int metricId)
+        public async Task<ActionResult<IEnumerable<DataPointResource>>> GetDataPoints([FromRoute]GetDataPointsForLastDayQuery dataPointQuery)
         {
-            var datapoints = await _dataContext.DataPoints.GetDataPointsLastDay(metricId).ToListAsync();
-            
-            if (datapoints == null)
+            var datapointResources = await _mediator.Send(dataPointQuery);
+            if (datapointResources == null)
             {
-                _logger.LogDebug("Can't find datapoints for metric with id: {id}", metricId);
                 return NotFound();
             }
             
-            return datapoints;
+            return datapointResources;
         }
 
-        [HttpPost("{metricId}/datapoints")]
+        [HttpPost("{id}/datapoints")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> AddDataPoints(int metricId, List<DataPoint> dataPoints)
+        public async Task<IActionResult> AddDataPoints([FromRoute]int id, [FromBody]AddDataPointCommand dataPointCommand)
         {
-            var metric = await _dataContext.Metrics.FindAsync(metricId);
-            if (metric == null)
-            {
-                _logger.LogDebug("Can't find metric with id: {id}", metricId);
-                return NotFound();
-            }
-            
-            dataPoints.ForEach(x => metric.AddDataPoint(x.Value, x.CreatedOn, _dataContext));
+            dataPointCommand.MetricId = id;
 
-            _dataContext.Metrics.Update(metric);
-            
-            _logger.LogInformation("Update Metric DataPoints: {@dataPoints}", dataPoints);
-
-            try
-            {
-                await _dataContext.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException) when (!MetricExists(metricId))
-            {
-                _logger.LogDebug("Can't find metric with id: {id}", metricId);
-
-                return NotFound();
-            }
-
+            var dataPointResource = await _mediator.Send(dataPointCommand);
+        
             var version = Request.HttpContext.GetRequestedApiVersion().ToString();
             return CreatedAtAction(
                 nameof(GetDataPoints), 
-                new{ metricId = metric.Id, version = version },
-                metric.DataPoints);
-        }
-        
-        private bool MetricExists(long id) => _dataContext.Metrics.Any(e => e.Id == id);
+                new{ metricId = id, version = version },
+                dataPointResource);
+        }        
     }
 }

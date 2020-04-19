@@ -1,6 +1,7 @@
+@using Microsoft.EntityFrameworkCore.Internal
 @model OpenNetworkStatus.Data.Entities.ComponentGroup
 @{
-    var worstStatus = Model.Components.Max(x => x.Status);
+    var worstStatus = Model.Components.Any() ? Model.Components.Max(x => x.Status) : ComponentStatus.Operational;
     var statusName = EnumTextService.GetComponentStatus(worstStatus);
     var statusClass = worstStatus switch
     {
@@ -37,7 +38,7 @@
     <div class="component-children @(isGroupExpanded ? "is-active" : "")">
         @foreach (var component in Model.Components)
         {
-            <partial name="_InnerComponent" model="component"/>
+            <partial name="Partial/_InnerComponent" model="component"/>
         }
     </div>
 </div>

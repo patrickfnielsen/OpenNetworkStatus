@@ -10,6 +10,6 @@ namespace OpenNetworkStatus.Data.Entities
         
         public double Value { get; set; }
         
-        public DateTime CreatedOn { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 }

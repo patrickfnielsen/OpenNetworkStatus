@@ -12,7 +12,7 @@ namespace OpenNetworkStatus.Data.QueryObjects
             var startDate = DateTime.UtcNow.AddDays(-days);
             return queryable
                 .Include(x => x.Updates)
-                .Where(x => x.CreatedOn.Date >= startDate)
+                .Where(x => x.CreatedAt.Date >= startDate)
                 .IncidentOrder();
                 
         }

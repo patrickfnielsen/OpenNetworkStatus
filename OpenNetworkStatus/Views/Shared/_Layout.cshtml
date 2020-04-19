@@ -1,4 +1,8 @@
-﻿<!doctype html>
+﻿@using Microsoft.Extensions.Options
+@using OpenNetworkStatus.Models.Options
+@inject IOptionsMonitor<SiteOptions> OptionsAccessor
+
+<!doctype html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -6,10 +10,10 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>@ViewBag.Title</title>
+    <title>@ViewBag.Title | @OptionsAccessor.CurrentValue.Name</title>
 
     <link rel="stylesheet" media="screen" href="//cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css" />
-    <link rel="stylesheet" media="screen" href="//cdn.jsdelivr.net/npm/@@creativebulma/bulma-tooltip@1.0.1/dist/bulma-tooltip.min.css" />
+    <link rel="stylesheet" media="screen" href="//cdn.jsdelivr.net/npm/@@creativebulma/bulma-tooltip@1.0.2/dist/bulma-tooltip.min.css" />
     <link rel="stylesheet" media="screen" href="/css/main.css" />
 </head>
 <body>

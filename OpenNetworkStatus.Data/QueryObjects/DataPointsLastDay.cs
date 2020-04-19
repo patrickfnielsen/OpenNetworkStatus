@@ -9,8 +9,8 @@ namespace OpenNetworkStatus.Data.QueryObjects
         public static IQueryable<DataPoint> GetDataPointsLastDay(this IQueryable<DataPoint> queryable, int metricId)
         {
             return queryable
-                .Where(x => x.MetricId == metricId && x.CreatedOn >= DateTime.UtcNow.AddDays(-1))
-                .OrderBy(x => x.CreatedOn);
+                .Where(x => x.MetricId == metricId && x.CreatedAt >= DateTime.UtcNow.AddDays(-1))
+                .OrderBy(x => x.CreatedAt);
 
         }
     }
