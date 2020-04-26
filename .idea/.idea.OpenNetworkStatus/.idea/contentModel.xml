@@ -15,6 +15,7 @@
         <e p="bin" t="ExcludeRecursive" />
         <e p="Controllers" t="Include">
           <e p="Api" t="Include">
+            <e p="AuthenticationApiController.cs" t="Include" />
             <e p="ComponentApiController.cs" t="Include" />
             <e p="ComponentGroupApiController.cs" t="Include" />
             <e p="IncidentApiController.cs" t="Include" />
@@ -40,6 +41,7 @@
           <e p="ErrorViewModel.cs" t="Include" />
           <e p="Options" t="Include">
             <e p="CorsOptions.cs" t="Include" />
+            <e p="JwtOptions.cs" t="Include" />
             <e p="SiteOptions.cs" t="Include" />
           </e>
           <e p="SiteStatusViewModel.cs" t="Include" />
@@ -60,21 +62,31 @@
           <e p="launchSettings.json" t="Include" />
         </e>
         <e p="Services" t="Include">
+          <e p="Authentication" t="Include">
+            <e p="AuthenticationManager.cs" t="Include" />
+            <e p="IAuthenticationManager.cs" t="Include" />
+            <e p="ITokenManager.cs" t="Include" />
+            <e p="JwtTokenManager.cs" t="Include" />
+          </e>
           <e p="Behaviors" t="Include">
             <e p="LoggingBehavior.cs" t="Include" />
           </e>
           <e p="ComponentGroupServices" t="Include">
             <e p="Commands" t="Include">
               <e p="AddComponentGroupCommand.cs" t="Include" />
-              <e p="AddComponentGroupCommandHandler.cs" t="Include" />
               <e p="DeleteComponentGroupCommand.cs" t="Include" />
-              <e p="DeleteComponentGroupCommandHandler.cs" t="Include" />
-              <e p="GetComponentGroupCommand.cs" t="Include" />
-              <e p="GetComponentGroupCommandHandler.cs" t="Include" />
-              <e p="GetComponentGroupsCommand.cs" t="Include" />
-              <e p="GetComponentGroupsCommandHandler.cs" t="Include" />
               <e p="UpdateComponentGroupCommand.cs" t="Include" />
+            </e>
+            <e p="Handlers" t="Include">
+              <e p="AddComponentGroupCommandHandler.cs" t="Include" />
+              <e p="DeleteComponentGroupCommandHandler.cs" t="Include" />
+              <e p="GetAllComponentGroupsQueryHandler.cs" t="Include" />
+              <e p="GetComponentGroupByIdQueryHandler.cs" t="Include" />
               <e p="UpdateComponentGroupCommandHandler.cs" t="Include" />
+            </e>
+            <e p="Queries" t="Include">
+              <e p="GetAllComponentGroupsQuery.cs" t="Include" />
+              <e p="GetComponentGroupByIdQuery.cs" t="Include" />
             </e>
             <e p="Resources" t="Include">
               <e p="ComponentGroupResource.cs" t="Include" />
@@ -83,15 +95,19 @@
           <e p="ComponentServices" t="Include">
             <e p="Commands" t="Include">
               <e p="AddComponentCommand.cs" t="Include" />
-              <e p="AddComponentCommandHandler.cs" t="Include" />
               <e p="DeleteComponentCommand.cs" t="Include" />
-              <e p="DeleteComponentCommandHandler.cs" t="Include" />
-              <e p="GetComponentCommand.cs" t="Include" />
-              <e p="GetComponentCommandHandler.cs" t="Include" />
-              <e p="GetComponentsCommand.cs" t="Include" />
-              <e p="GetComponentsCommandHandler.cs" t="Include" />
               <e p="UpdateComponentCommand.cs" t="Include" />
+            </e>
+            <e p="Handlers" t="Include">
+              <e p="AddComponentCommandHandler.cs" t="Include" />
+              <e p="DeleteComponentCommandHandler.cs" t="Include" />
+              <e p="GetAllComponentsQueryHandler.cs" t="Include" />
+              <e p="GetComponentByIdQueryHandler.cs" t="Include" />
               <e p="UpdateComponentCommandHandler.cs" t="Include" />
+            </e>
+            <e p="Queries" t="Include">
+              <e p="GetAllComponentsQuery.cs" t="Include" />
+              <e p="GetComponentByIdQuery.cs" t="Include" />
             </e>
             <e p="Resources" t="Include">
               <e p="ComponentResource.cs" t="Include" />
@@ -107,7 +123,32 @@
             </e>
           </e>
           <e p="JsonSnakeCaseNamingPolicy.cs" t="Include" />
-          <e p="MericServices" t="Include" />
+          <e p="MetricServices" t="Include">
+            <e p="Commands" t="Include">
+              <e p="AddDataPointCommand.cs" t="Include" />
+              <e p="AddMetricCommand.cs" t="Include" />
+              <e p="DeleteMetricCommand.cs" t="Include" />
+              <e p="UpdateMetricCommand.cs" t="Include" />
+            </e>
+            <e p="Handlers" t="Include">
+              <e p="AddDataPointCommandHandler.cs" t="Include" />
+              <e p="AddMetricCommandHandler.cs" t="Include" />
+              <e p="DeleteMetricCommandHandler.cs" t="Include" />
+              <e p="GetAllMetricsQueryHandler.cs" t="Include" />
+              <e p="GetDataPointsForLastDayQueryHandler.cs" t="Include" />
+              <e p="GetMetricByIdQueryHandler.cs" t="Include" />
+              <e p="UpdateMetricCommandHandler.cs" t="Include" />
+            </e>
+            <e p="Queries" t="Include">
+              <e p="GetAllMetricsQuery.cs" t="Include" />
+              <e p="GetDataPointsForLastDayQuery.cs" t="Include" />
+              <e p="GetMetricByIdQuery.cs" t="Include" />
+            </e>
+            <e p="Resources" t="Include">
+              <e p="DataPointResource.cs" t="Include" />
+              <e p="MetricResource.cs" t="Include" />
+            </e>
+          </e>
           <e p="PageServices" t="Include">
             <e p="PageService.cs" t="Include" />
             <e p="Resources" t="Include">

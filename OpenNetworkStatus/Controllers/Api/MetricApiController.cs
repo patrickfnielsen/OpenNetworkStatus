@@ -1,15 +1,11 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Mime;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using OpenNetworkStatus.Data;
-using OpenNetworkStatus.Data.Entities;
-using OpenNetworkStatus.Data.QueryObjects;
 using OpenNetworkStatus.Services.MetricServices.Commands;
 using OpenNetworkStatus.Services.MetricServices.Queries;
 using OpenNetworkStatus.Services.MetricServices.Resources;
@@ -18,43 +14,38 @@ using OpenNetworkStatus.Services.PageServices.Resources;
 
 namespace OpenNetworkStatus.Controllers.Api
 {
-    [ApiVersion("1.0")]
-    [ApiController]
     [Route("api/v{version:apiVersion}/metrics")]
-    public class MetricApiController : Controller
+    public class MetricApiController : BaseApiController
     {
         private readonly ILogger<MetricApiController> _logger;
-        private readonly StatusDataContext _dataContext;
         private readonly IMediator _mediator;
         
-        public MetricApiController(ILogger<MetricApiController> logger, StatusDataContext dataContext, IMediator mediator)
+        public MetricApiController(ILogger<MetricApiController> logger, IMediator mediator)
         {
             _logger = logger;
-            _dataContext = dataContext;
             _mediator = mediator;
         }
         
         [HttpPost]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<MetricResource>> CreateAsync(AddMetricCommand metricCommand)
+        public async Task<ActionResult<MetricResource>> CreateMetricAsync(AddMetricCommand metricCommand)
         {
             var metricResource = await _mediator.Send(metricCommand);
 
-            var version = Request.HttpContext.GetRequestedApiVersion().ToString();
             return CreatedAtAction(
-                nameof(GetMetric), 
-                new { metricId = metricResource.Id, version = version },
+                nameof(GetMetricAsync), 
+                new { metricId = metricResource.Id, version = RequestedApiVersion },
                 metricResource);
         }
         
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteMetric([FromRoute]DeleteMetricCommand metricCommand)
+        public async Task<IActionResult> DeleteMetricAsync([FromRoute]DeleteMetricCommand metricCommand)
         {
-            var metricResource = await _mediator.Send(metricCommand);
-            if (metricResource == false)
+            var isDeleted = await _mediator.Send(metricCommand);
+            if (isDeleted == false)
             {
                 return NotFound();
             }
@@ -65,15 +56,11 @@ namespace OpenNetworkStatus.Controllers.Api
         [HttpPut("{id}")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<MetricResource>> UpdateMetric([FromRoute]int id, UpdateMetricCommand metricCommand)
+        public async Task<ActionResult<MetricResource>> UpdateMetricAsync([FromRoute]int id, UpdateMetricCommand metricCommand)
         {
-            if (id != metricCommand.Id)
-            {
-                return BadRequest();
-            }
-            
+            metricCommand.Id = id;
+
             var metricResource = await _mediator.Send(metricCommand);
             if (metricResource == null)
             {
@@ -84,9 +71,10 @@ namespace OpenNetworkStatus.Controllers.Api
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<MetricResource>> GetMetric([FromRoute]GetMetricByIdQuery metricQuery)
+        public async Task<ActionResult<MetricResource>> GetMetricAsync([FromRoute]GetMetricByIdQuery metricQuery)
         {
             var metricResource = await _mediator.Send(metricQuery);
             if (metricResource == null)
@@ -98,8 +86,9 @@ namespace OpenNetworkStatus.Controllers.Api
         }
         
         [HttpGet]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<PagedResponse<MetricResource>>> GetMetrics([FromQuery]GetAllMetricsQuery metricsQuery)
+        public async Task<ActionResult<PagedResponse<MetricResource>>> GetMetricsAsync([FromQuery]GetAllMetricsQuery metricsQuery)
         {
             var metricResources = await _mediator.Send(metricsQuery);
             if (metricResources == null)
@@ -111,9 +100,10 @@ namespace OpenNetworkStatus.Controllers.Api
         }
         
         [HttpGet("{metricId}/datapoints")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<DataPointResource>>> GetDataPoints([FromRoute]GetDataPointsForLastDayQuery dataPointQuery)
+        public async Task<ActionResult<IEnumerable<DataPointResource>>> GetDataPointsAsync([FromRoute]GetDataPointsForLastDayQuery dataPointQuery)
         {
             var datapointResources = await _mediator.Send(dataPointQuery);
             if (datapointResources == null)
@@ -128,16 +118,15 @@ namespace OpenNetworkStatus.Controllers.Api
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> AddDataPoints([FromRoute]int id, [FromBody]AddDataPointCommand dataPointCommand)
+        public async Task<IActionResult> AddDataPointsAsync([FromRoute]int id, [FromBody]AddDataPointCommand dataPointCommand)
         {
             dataPointCommand.MetricId = id;
 
             var dataPointResource = await _mediator.Send(dataPointCommand);
         
-            var version = Request.HttpContext.GetRequestedApiVersion().ToString();
             return CreatedAtAction(
-                nameof(GetDataPoints), 
-                new{ metricId = id, version = version },
+                nameof(GetDataPointsAsync), 
+                new{ metricId = id, version = RequestedApiVersion },
                 dataPointResource);
         }        
     }

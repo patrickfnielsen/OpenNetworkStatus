@@ -1,0 +1,19 @@
+﻿using System.ComponentModel.DataAnnotations;
+using MediatR;
+using OpenNetworkStatus.Attributes;
+using OpenNetworkStatus.Data.Enums;
+using OpenNetworkStatus.Services.IncidentServices.Resources;
+
+namespace OpenNetworkStatus.Services.IncidentServices.Commands
+{
+    public class AddIncidentUpdateCommand : IRequest<IncidentUpdateResource>
+    {
+        internal int IncidentId { get; set; }
+
+        [RequiredEnum]
+        public IncidentStatus Status { get; set; }
+
+        [Required]
+        public string Message { get; set; }
+    }
+}

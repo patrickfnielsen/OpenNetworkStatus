@@ -33,14 +33,12 @@ namespace OpenNetworkStatus.Controllers
             };
         }
 
-        [AllowAnonymous]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Index()
         {
             return RedirectToActionPermanent(nameof(Code));
         }
 
-        [AllowAnonymous]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Code(int id = 500)
         {

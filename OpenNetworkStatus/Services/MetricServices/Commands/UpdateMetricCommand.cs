@@ -7,8 +7,7 @@ namespace OpenNetworkStatus.Services.MetricServices.Commands
     //TODO: Private setters when System.Text.json 5.0 is released
     public class UpdateMetricCommand : IRequest<MetricResource>
     {
-        [Required]
-        public int Id { get; set; }
+        internal int Id { get; set; }
             
         [Required]
         public string Title { get; set; }

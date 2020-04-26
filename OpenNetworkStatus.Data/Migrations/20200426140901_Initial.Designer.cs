@@ -10,7 +10,7 @@ using OpenNetworkStatus.Data;
 namespace OpenNetworkStatus.Data.Migrations
 {
     [DbContext(typeof(StatusDataContext))]
-    [Migration("20200417093133_Initial")]
+    [Migration("20200426140901_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -195,6 +195,31 @@ namespace OpenNetworkStatus.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Metrics");
+                });
+
+            modelBuilder.Entity("OpenNetworkStatus.Data.Entities.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("OpenNetworkStatus.Data.Entities.Component", b =>

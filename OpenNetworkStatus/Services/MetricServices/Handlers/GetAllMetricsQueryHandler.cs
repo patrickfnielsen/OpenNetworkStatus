@@ -6,7 +6,6 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using OpenNetworkStatus.Data;
 using OpenNetworkStatus.Data.QueryObjects;
-using OpenNetworkStatus.Services.ComponentServices.Resources;
 using OpenNetworkStatus.Services.MetricServices.Queries;
 using OpenNetworkStatus.Services.MetricServices.Resources;
 

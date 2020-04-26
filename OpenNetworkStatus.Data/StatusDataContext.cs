@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -14,7 +13,7 @@ namespace OpenNetworkStatus.Data
         public StatusDataContext(DbContextOptions<StatusDataContext> options) : base(options)
         {
         }
-        
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -22,6 +21,22 @@ namespace OpenNetworkStatus.Data
 
             IgnoreCreatedAtOnUpdates(modelBuilder);
             ForceUtcDateTime(modelBuilder);
+            //CreateDefaultAdminAccount(modelBuilder);
+        }
+
+
+        private void CreateDefaultAdminAccount(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<User>()
+                .HasData(new User
+                {
+                    Id = 1,
+                    Username = "admin",
+                    PasswordHash = "50DcN6mhtLk8FE1Bwy6N0fUHKG8uCgyZkjtUYCSBDZhHRHxBg8ywotiQ3Zt6i6rDAA==", //Equals to "password"
+                    UpdatedAt = DateTime.UtcNow,
+                    CreatedAt = DateTime.UtcNow
+                }
+            );
         }
 
         private void IgnoreCreatedAtOnUpdates(ModelBuilder modelBuilder)
@@ -51,6 +66,12 @@ namespace OpenNetworkStatus.Data
             });
             
             modelBuilder.Entity<IncidentUpdate>(builder =>
+            {
+                builder.Property(e => e.CreatedAt).ValueGeneratedOnAdd()
+                    .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
+            });
+
+            modelBuilder.Entity<User>(builder =>
             {
                 builder.Property(e => e.CreatedAt).ValueGeneratedOnAdd()
                     .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
@@ -88,6 +109,7 @@ namespace OpenNetworkStatus.Data
 
         private void OnBeforeSave()
         {
+            //Set UpdatedAt + CreatedAt dates
             var entries = ChangeTracker.Entries();
             foreach (var entry in entries)
             {
@@ -117,5 +139,7 @@ namespace OpenNetworkStatus.Data
         public DbSet<Incident> Incidents { get; set; }
         
         public DbSet<IncidentUpdate> IncidentUpdates { get; set; }
+
+        public DbSet<User> Users { get; set; }
     }
 }

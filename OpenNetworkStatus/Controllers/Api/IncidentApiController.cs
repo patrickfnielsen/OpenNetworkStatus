@@ -1,159 +1,160 @@
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Mime;
 using System.Threading.Tasks;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using OpenNetworkStatus.Exceptions;
-using OpenNetworkStatus.Models;
-using OpenNetworkStatus.Services.IncidentServices;
+using OpenNetworkStatus.Services.IncidentServices.Commands;
+using OpenNetworkStatus.Services.IncidentServices.Queries;
 using OpenNetworkStatus.Services.IncidentServices.Resources;
 using OpenNetworkStatus.Services.PageServices;
 using OpenNetworkStatus.Services.PageServices.Resources;
 
 namespace OpenNetworkStatus.Controllers.Api
 {
-    [ApiVersion("1.0")]
-    [ApiController]
     [Route("api/v{version:apiVersion}/incidents")]
-    public class IncidentApiController : Controller
+    public class IncidentApiController : BaseApiController
     {
-        private readonly IncidentService _incidentService;
+        private readonly IMediator _mediator;
         
-        public IncidentApiController(IncidentService incidentService)
+        public IncidentApiController(IMediator mediator)
         {
-            _incidentService = incidentService;
+            _mediator = mediator;
         }
         
         [HttpPost]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<GetIncidentResource>> CreateAsync(AddIncidentResource incident)
+        public async Task<ActionResult<IncidentResource>> CreateIncidentAsync(AddIncidentCommand incidentCommand)
         {
-            var incidentResource = await _incidentService.CreateAsync(incident);
+            var incidentResource = await _mediator.Send(incidentCommand);
 
-            var version = Request.HttpContext.GetRequestedApiVersion().ToString();
             return CreatedAtAction(
-                nameof(GetIncident), 
-                new { incidentId = incidentResource.Id, version = version},
+                nameof(GetIncidentAsync), 
+                new { id = incidentResource.Id, version = RequestedApiVersion },
                 incidentResource);
         }
         
-        [HttpDelete("{incidentId}")]
+        [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteIncident([FromRoute]int incidentId)
+        public async Task<IActionResult> DeleteIncidentAsync([FromRoute]DeleteIncidentCommand incidentCommand)
         {
-            var incident = await _incidentService.GetIncidentAsync(incidentId);
-            if (incident == null)
+            var isDeleted = await _mediator.Send(incidentCommand);
+            if (isDeleted == false)
             {
                 return NotFound();
             }
-            
-            await _incidentService.DeleteIncidentAsync(incidentId);
+
             return NoContent();
         }
         
-        [HttpPut("{incidentId}")]
+        [HttpPut("{id}")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateIncident([FromRoute]int incidentId, AddIncidentResource incident)
+        public async Task<ActionResult<IncidentResource>> UpdateIncidentAsync([FromRoute]int id, [FromBody]UpdateIncidentCommand incidentCommand)
         {
-            try
-            {
-                await _incidentService.UpdateIncidentAsync(incidentId, incident);
-            }
-            catch (NotFoundException)
+            incidentCommand.Id = id;
+
+            var incidentResource = await _mediator.Send(incidentCommand);
+            if (incidentResource == null)
             {
                 return NotFound();
             }
 
-            return NoContent();
+            return incidentResource;
         }
 
         [HttpGet("{incidentId}")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<GetIncidentResource>> GetIncident([FromRoute]int incidentId)
+        public async Task<ActionResult<IncidentResource>> GetIncidentAsync([FromRoute]GetIncidentByIdQuery incidentQuery)
         {
-            var incident =  await _incidentService.GetIncidentAsync(incidentId);
-            if (incident == null)
+            var incidentResource = await _mediator.Send(incidentQuery);
+            if (incidentResource == null)
             {
                 return NotFound();
             }
 
-            return incident;
+            return incidentResource;
         }
         
         [HttpGet]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<PagedResponse<GetIncidentResource>>> GetIncidents([FromQuery]int page, [FromQuery]int perPage)
+        public async Task<ActionResult<PagedResponse<IncidentResource>>> GetIncidentsAsync([FromQuery]GetAllIncidentsQuery incidentQuery)
         {
-            var result = await _incidentService.GetIncidentsAsync(page, perPage);
-            return PageService.CreatePaginatedResponse(page, perPage, result.ToList());
+            var incidentResources = await _mediator.Send(incidentQuery);
+            if (incidentResources == null)
+            {
+                return NotFound();
+            }
+
+            return PageService.CreatePaginatedResponse(incidentQuery.Page, incidentQuery.Limit, incidentResources);
         }
         
         [HttpPost("{incidentId}/updates")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> AddIncidentUpdate([FromRoute]int incidentId, AddIncidentUpdateResource incidentUpdate)
+        public async Task<IActionResult> AddIncidentUpdateAsync([FromRoute]int incidentId, AddIncidentUpdateCommand incidentUpdateCommand)
         {
-            try
-            {
-                var update = await _incidentService.AddIncidentUpdateAsync(incidentId, incidentUpdate);
-                            
-                var version = Request.HttpContext.GetRequestedApiVersion().ToString();
-                return CreatedAtAction(
-                    nameof(GetIncidentUpdate), 
-                    new { incidentId = incidentId, updateId = update.Id, version = version },
-                    update);
-            }
-            catch (NotFoundException)
+            incidentUpdateCommand.IncidentId = incidentId;
+
+            var incidentResource = await _mediator.Send(incidentUpdateCommand);
+            if(incidentResource == null)
             {
                 return NotFound();
             }
+
+            return CreatedAtAction(
+                nameof(GetIncidentUpdateAsync),
+                new { incidentId = incidentResource.IncidentId, updateid = incidentResource.Id, version = RequestedApiVersion },
+                incidentResource);
         }
         
         [HttpGet("{incidentId}/updates")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<PagedResponse<GetIncidentUpdateResource>>> GetAllIncidentUpdates([FromRoute]int incidentId, [FromQuery]int page, [FromQuery]int perPage)
+        public async Task<ActionResult<PagedResponse<IncidentUpdateResource>>> GetAllIncidentUpdates([FromRoute]GetIncidentUpdatesForIncidentQuery incidentUpdateQuery)
         {
-            var updates = await _incidentService.GetIncidentUpdatesAsync(incidentId, page, perPage);            
-            return PageService.CreatePaginatedResponse(page, perPage, updates);
+            var updateResources = await _mediator.Send(incidentUpdateQuery);         
+            return PageService.CreatePaginatedResponse(incidentUpdateQuery.Page, incidentUpdateQuery.Limit, updateResources);
         }
 
         [HttpGet("{incidentId}/updates/{updateId}")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<GetIncidentUpdateResource>> GetIncidentUpdate([FromRoute]int incidentId, [FromRoute]int updateId)
+        public async Task<ActionResult<IncidentUpdateResource>> GetIncidentUpdateAsync([FromRoute]GetIncidentUpdateByIdQuery incidentUpdateQuery)
         {
-            var update = await _incidentService.GetIncidentUpdateAsync(incidentId, updateId);
-            if (update == null)
+            var updateResource = await _mediator.Send(incidentUpdateQuery);
+            if (updateResource == null)
             {
                 return NotFound();
             }
             
-            return update;
+            return updateResource;
         }
         
         [HttpPut("{incidentId}/updates/{updateId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<GetIncidentUpdateResource>> UpdateIncidentUpdate([FromRoute]int incidentId, [FromRoute]int updateId, [FromBody]AddIncidentUpdateResource update)
-        {            
-            try
-            {
-                await _incidentService.UpdateIncidentUpdateAsync(incidentId, updateId, update);
-            }
-            catch (NotFoundException)
+        public async Task<ActionResult<IncidentUpdateResource>> UpdateIncidentUpdateAsync([FromRoute]int incidentId, [FromRoute]int updateId, [FromBody]UpdateIncidentUpdateCommand incidentUpdateCommand)
+        {
+            incidentUpdateCommand.Id = updateId;
+            incidentUpdateCommand.IncidentId = incidentId;
+
+            var updateResource = await _mediator.Send(incidentUpdateCommand);
+            if (updateResource == null)
             {
                 return NotFound();
             }
 
-            return NoContent();
+            return updateResource;
         }
     }
 }

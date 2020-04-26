@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using OpenNetworkStatus.Data;
-using OpenNetworkStatus.Data.Entities;
 using OpenNetworkStatus.Services.MetricServices.Commands;
 using OpenNetworkStatus.Services.MetricServices.Resources;
 
@@ -27,7 +26,7 @@ namespace OpenNetworkStatus.Services.MetricServices.Handlers
                 return null;
             }
             
-            metric.AddDataPoint(request.Value, request.CreatedAt ?? DateTime.UtcNow);
+            metric.AddDataPoint(request.Value, request.CreatedAt ?? DateTime.UtcNow, _dataContext);
             _dataContext.Metrics.Update(metric);
             
             await _dataContext.SaveChangesAsync(cancellationToken);

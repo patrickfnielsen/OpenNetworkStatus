@@ -11,11 +11,11 @@ using OpenNetworkStatus.Services.MetricServices.Resources;
 
 namespace OpenNetworkStatus.Services.MetricServices.Handlers
 {
-    public class GetDataPointsFOrLastDayQueryHandler : IRequestHandler<GetDataPointsForLastDayQuery, List<DataPointResource>>
+    public class GetDataPointsForLastDayQueryHandler : IRequestHandler<GetDataPointsForLastDayQuery, List<DataPointResource>>
     {
         private readonly StatusDataContext _dataContext;
         
-        public GetDataPointsFOrLastDayQueryHandler(StatusDataContext dataContext)
+        public GetDataPointsForLastDayQueryHandler(StatusDataContext dataContext)
         {
             _dataContext = dataContext;
         }

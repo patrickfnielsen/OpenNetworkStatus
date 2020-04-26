@@ -9,8 +9,7 @@ namespace OpenNetworkStatus.Services.ComponentServices.Commands
     //TODO: Private setters when System.Text.json 5.0 is released
     public class UpdateComponentCommand : IRequest<ComponentResource>
     {
-        [Required]
-        public int Id { get; set; }
+        internal int Id { get; set; }
             
         [RequiredEnum]
         public ComponentStatus Status { get; set; }

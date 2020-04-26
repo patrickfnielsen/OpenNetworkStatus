@@ -1,6 +1,7 @@
 using System.Net.Mime;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OpenNetworkStatus.Services.ComponentServices.Commands;
@@ -11,10 +12,8 @@ using OpenNetworkStatus.Services.PageServices.Resources;
 
 namespace OpenNetworkStatus.Controllers.Api
 {
-    [ApiVersion("1.0")]
-    [ApiController]
     [Route("api/v{version:apiVersion}/components")]
-    public class ComponentApiController : Controller
+    public class ComponentApiController : BaseApiController
     {
         private readonly IMediator _mediator;
         
@@ -26,25 +25,23 @@ namespace OpenNetworkStatus.Controllers.Api
         [HttpPost]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<ComponentResource>> CreateAsync([FromBody]AddComponentCommand componentCommand)
+        public async Task<ActionResult<ComponentResource>> CreateComponentAsync([FromBody]AddComponentCommand componentCommand)
         {
             var componentResource = await _mediator.Send(componentCommand);
 
-            var version = Request.HttpContext.GetRequestedApiVersion().ToString();
             return CreatedAtAction(
-                nameof(GetComponent), 
-                new { id = componentResource.Id, version = version },
+                nameof(GetComponentAsync), 
+                new { id = componentResource.Id, version = RequestedApiVersion },
                 componentResource);
         }
         
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteComponent([FromRoute]DeleteComponentCommand componentCommand)
+        public async Task<IActionResult> DeleteComponentAsync([FromRoute]DeleteComponentCommand componentCommand)
         {
-            var componentResource = await _mediator.Send(componentCommand);
-
-            if (componentResource == false)
+            var isDeleted = await _mediator.Send(componentCommand);
+            if (isDeleted == false)
             {
                 return NotFound();
             }
@@ -55,14 +52,10 @@ namespace OpenNetworkStatus.Controllers.Api
         [HttpPut("{id}")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<ComponentResource>> UpdateComponent([FromRoute]int id, UpdateComponentCommand componentCommand)
+        public async Task<ActionResult<ComponentResource>> UpdateComponentAsync([FromRoute]int id, UpdateComponentCommand componentCommand)
         {
-            if (id != componentCommand.Id)
-            {
-                return BadRequest();
-            }
+            componentCommand.Id = id;
             
             var componentResource = await _mediator.Send(componentCommand);
             if (componentResource == null)
@@ -74,9 +67,10 @@ namespace OpenNetworkStatus.Controllers.Api
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<ComponentResource>> GetComponent([FromRoute]GetComponentByIdQuery componentQuery)
+        public async Task<ActionResult<ComponentResource>> GetComponentAsync([FromRoute]GetComponentByIdQuery componentQuery)
         {
             var componentResource = await _mediator.Send(componentQuery);
             if (componentResource == null)
@@ -88,8 +82,9 @@ namespace OpenNetworkStatus.Controllers.Api
         }
         
         [HttpGet]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<PagedResponse<ComponentResource>>> GetComponents([FromQuery]GetAllComponentsQuery componentQuery)
+        public async Task<ActionResult<PagedResponse<ComponentResource>>> GetComponentsAsync([FromQuery]GetAllComponentsQuery componentQuery)
         {
             var componentResource = await _mediator.Send(componentQuery);
             if (componentResource == null)

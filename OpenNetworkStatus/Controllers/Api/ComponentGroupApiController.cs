@@ -1,6 +1,7 @@
 using System.Net.Mime;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OpenNetworkStatus.Data.Entities;
@@ -12,10 +13,8 @@ using OpenNetworkStatus.Services.PageServices.Resources;
 
 namespace OpenNetworkStatus.Controllers.Api
 {
-    [ApiVersion("1.0")]
-    [ApiController]
     [Route("api/v{version:apiVersion}/component-groups")]
-    public class ComponentGroupGroupApiController : Controller
+    public class ComponentGroupGroupApiController : BaseApiController
     {
         private readonly IMediator _mediator;
 
@@ -27,24 +26,23 @@ namespace OpenNetworkStatus.Controllers.Api
         [HttpPost]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<ComponentGroup>> CreateAsync(AddComponentGroupCommand groupCommand)
+        public async Task<ActionResult<ComponentGroup>> CreateComponentGroupAsync(AddComponentGroupCommand groupCommand)
         {
             var groupResource = await _mediator.Send(groupCommand);
             
-            var version = Request.HttpContext.GetRequestedApiVersion().ToString();
             return CreatedAtAction(
-                nameof(GetComponentGroup), 
-                new { id = groupResource.Id, version = version },
+                nameof(GetComponentGroupAsync), 
+                new { id = groupResource.Id, version = RequestedApiVersion },
                 groupResource);
         }
         
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteComponentGroup([FromRoute]DeleteComponentGroupCommand groupCommand)
+        public async Task<IActionResult> DeleteComponentGroupAsync([FromRoute]DeleteComponentGroupCommand groupCommand)
         {
-            var groupResource = await _mediator.Send(groupCommand);
-            if (groupResource == false)
+            var isDeleted = await _mediator.Send(groupCommand);
+            if (isDeleted == false)
             {
                 return NotFound();
             }
@@ -55,14 +53,10 @@ namespace OpenNetworkStatus.Controllers.Api
         [HttpPut("{id}")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<ComponentGroupResource>> UpdateComponentGroup([FromRoute]int id, UpdateComponentGroupCommand groupCommand)
+        public async Task<ActionResult<ComponentGroupResource>> UpdateComponentGroupAsync([FromRoute]int id, UpdateComponentGroupCommand groupCommand)
         {
-            if (id != groupCommand.Id)
-            {
-                return BadRequest();
-            }
+            groupCommand.Id = id;
             
             var groupResource = await _mediator.Send(groupCommand);
             if (groupResource == null)
@@ -74,9 +68,10 @@ namespace OpenNetworkStatus.Controllers.Api
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<ComponentGroupResource>> GetComponentGroup([FromRoute]GetComponentGroupByIdQuery groupQuery)
+        public async Task<ActionResult<ComponentGroupResource>> GetComponentGroupAsync([FromRoute]GetComponentGroupByIdQuery groupQuery)
         {
             var groupResource = await _mediator.Send(groupQuery);
             if (groupResource == null)
@@ -88,8 +83,9 @@ namespace OpenNetworkStatus.Controllers.Api
         }
         
         [HttpGet]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<PagedResponse<ComponentGroupResource>>> GetComponentGroups([FromQuery]GetAllComponentGroupsQuery groupQuery)
+        public async Task<ActionResult<PagedResponse<ComponentGroupResource>>> GetComponentGroupsAsync([FromQuery]GetAllComponentGroupsQuery groupQuery)
         {
             var groupResources = await _mediator.Send(groupQuery);
             if (groupResources == null)

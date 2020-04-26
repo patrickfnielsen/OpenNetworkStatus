@@ -7,7 +7,7 @@ namespace OpenNetworkStatus.Services.MetricServices.Commands
 {
     public class AddDataPointCommand : IRequest<DataPointResource>
     {        
-        public int MetricId { get; set; }
+        internal int MetricId { get; set; }
         
         [Required]
         public double Value { get; set; }
