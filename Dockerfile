@@ -7,6 +7,8 @@ EXPOSE 8080
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-alpine AS build
 WORKDIR /src
 COPY ["OpenNetworkStatus/OpenNetworkStatus.csproj", "OpenNetworkStatus/"]
+COPY ["OpenNetworkStatus.Data/OpenNetworkStatus.Data.csproj", "OpenNetworkStatus.Data/"]
+
 RUN dotnet restore "OpenNetworkStatus/OpenNetworkStatus.csproj"
 COPY . .
 WORKDIR "/src/OpenNetworkStatus"

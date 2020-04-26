@@ -2,9 +2,7 @@ version: '3.7'
 
 services:
   network_status:
-    build:
-      context: .
-      dockerfile: OpenNetworkStatus/Dockerfile
+    build: .
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:5001;
@@ -19,7 +17,7 @@ services:
     image: postgres:11.5-alpine
     environment:
       - POSTGRES_USER=status
-      - POSTGRES_PASSWORD=statuspassword
+      - POSTGRES_PASSWORD=status
       - POSTGRES_DB=status
     networks:
       - internal
