@@ -3,6 +3,7 @@ version: '3.7'
 services:
   network_status:
     build: .
+    restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:5001;
@@ -21,8 +22,7 @@ services:
       - POSTGRES_DB=status
     networks:
       - internal
-
-
+ 
 networks:
   internal:
     driver: bridge

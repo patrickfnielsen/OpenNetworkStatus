@@ -57,7 +57,7 @@ namespace OpenNetworkStatus
             
             services.AddDbContext<StatusDataContext>(
                 options => options.UseNpgsql(
-                    Configuration.GetConnectionString("DatabaseContext"), 
+                    Configuration.GetConnectionString("default"), 
                     x => x.MigrationsAssembly(typeof(StatusDataContext).Namespace)
                 )
             );

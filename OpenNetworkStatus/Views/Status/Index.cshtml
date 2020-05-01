@@ -1,6 +1,7 @@
 ﻿@model OpenNetworkStatus.Models.StatusViewModel
 @{
     ViewData["Title"] = "Status";
+    ViewData["StatusIcon"] = EnumTextService.GetSiteStatusIcon(Model.SiteStatus.Status);
 }
 
 <partial name="Partial/_SiteStatus" model="@Model.SiteStatus"/>

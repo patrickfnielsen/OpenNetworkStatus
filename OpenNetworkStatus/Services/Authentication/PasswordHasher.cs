@@ -26,7 +26,7 @@ namespace OpenNetworkStatus.Services.Authentication
                 numBytesRequested: SubkeyLength
             );
 
-            var inArray = new byte[1 + SaltSize + SubkeyLength];
+            var inArray = new byte[SaltSize + SubkeyLength];
             Buffer.BlockCopy(salt, 0, inArray, 0, SaltSize);
             Buffer.BlockCopy(hashed, 0, inArray, 0 + SaltSize, SubkeyLength);
 
@@ -67,7 +67,9 @@ namespace OpenNetworkStatus.Services.Authentication
             );
 
             if (CryptographicOperations.FixedTimeEquals(storedHashedPassword, newHashedPassword))
+            {
                 return PasswordVerificationResult.Success;
+            }
 
             return PasswordVerificationResult.Failed;
         }

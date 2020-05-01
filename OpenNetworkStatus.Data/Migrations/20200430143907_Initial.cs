@@ -65,6 +65,7 @@ namespace OpenNetworkStatus.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:IdentitySequenceOptions", "'2', '1', '', '', 'False', '1'")
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false),
@@ -144,6 +145,11 @@ namespace OpenNetworkStatus.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "CreatedAt", "PasswordHash", "UpdatedAt", "Username" },
+                values: new object[] { 1, new DateTime(2020, 4, 30, 14, 39, 6, 849, DateTimeKind.Utc).AddTicks(3490), "50DcN6mhtLk8FE1Bwy6N0fUHKG8uCgyZkjtUYCSBDZhHRHxBg8ywotiQ3Zt6i6rDAA==", new DateTime(2020, 4, 30, 14, 39, 6, 849, DateTimeKind.Utc).AddTicks(2940), "admin" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Components_ComponentGroupId",

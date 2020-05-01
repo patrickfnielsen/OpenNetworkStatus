@@ -21,7 +21,7 @@ namespace OpenNetworkStatus.Data
 
             IgnoreCreatedAtOnUpdates(modelBuilder);
             ForceUtcDateTime(modelBuilder);
-            //CreateDefaultAdminAccount(modelBuilder);
+            CreateDefaultAdminAccount(modelBuilder);
         }
 
 
@@ -75,6 +75,7 @@ namespace OpenNetworkStatus.Data
             {
                 builder.Property(e => e.CreatedAt).ValueGeneratedOnAdd()
                     .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
+                builder.Property(e => e.Id).HasIdentityOptions(startValue: 2);
             });
         }
 

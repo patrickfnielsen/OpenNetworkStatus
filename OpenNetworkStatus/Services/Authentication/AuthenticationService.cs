@@ -23,8 +23,6 @@ namespace OpenNetworkStatus.Services.Authentication
             }
 
             var user = await _dataContext.Users.SingleOrDefaultAsync(x => x.Username == username);
-
-            // check if username exists
             if (user == null)
             {
                 return false;

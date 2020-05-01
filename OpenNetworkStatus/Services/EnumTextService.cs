@@ -9,13 +9,27 @@ namespace OpenNetworkStatus.Services
         {
             var statusText = status switch
             {
-                SiteStatus.AllOperational            => "All Systems Operational",
+                SiteStatus.AllOperational => "All Systems Operational",
                 SiteStatus.SystemPerformanceImpacted => "Some systems are experiencing performance issues",
-                SiteStatus.PartialSystemIssues       => "Some systems are experiencing issues",
-                SiteStatus.MajorSystemIssues         => "Some systems are experiencing a major outage",
-                _                                    => "Unknown system status"
+                SiteStatus.PartialSystemIssues => "Some systems are experiencing issues",
+                SiteStatus.MajorSystemIssues => "Some systems are experiencing a major outage",
+                _ => "Unknown system status"
             };
             
+            return statusText;
+        }
+
+        public static string GetSiteStatusIcon(SiteStatus status)
+        {
+            var statusText = status switch
+            {
+                SiteStatus.AllOperational => "favicon-operational.ico",
+                SiteStatus.SystemPerformanceImpacted => "favicon-performance.ico",
+                SiteStatus.PartialSystemIssues => "favicon-partial.ico",
+                SiteStatus.MajorSystemIssues => "favicon-major.ico",
+                _ => null
+            };
+
             return statusText;
         }
 

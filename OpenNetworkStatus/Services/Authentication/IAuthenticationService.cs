@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using OpenNetworkStatus.Data.Entities;
 
 namespace OpenNetworkStatus.Services.Authentication
 {

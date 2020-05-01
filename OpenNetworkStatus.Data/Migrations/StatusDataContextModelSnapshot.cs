@@ -200,6 +200,7 @@ namespace OpenNetworkStatus.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:IdentitySequenceOptions", "'2', '1', '', '', 'False', '1'")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<DateTime>("CreatedAt")
@@ -218,6 +219,16 @@ namespace OpenNetworkStatus.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2020, 4, 30, 14, 39, 6, 849, DateTimeKind.Utc).AddTicks(3490),
+                            PasswordHash = "50DcN6mhtLk8FE1Bwy6N0fUHKG8uCgyZkjtUYCSBDZhHRHxBg8ywotiQ3Zt6i6rDAA==",
+                            UpdatedAt = new DateTime(2020, 4, 30, 14, 39, 6, 849, DateTimeKind.Utc).AddTicks(2940),
+                            Username = "admin"
+                        });
                 });
 
             modelBuilder.Entity("OpenNetworkStatus.Data.Entities.Component", b =>
