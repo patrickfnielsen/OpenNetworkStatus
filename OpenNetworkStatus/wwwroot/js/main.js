@@ -20,7 +20,9 @@
     }
 })();
 
-Status.Metric = (function() {    
+Status.Metric = (function () {
+    let timers = []
+
     function init(options) {
         Status.Metric.options = options;
 
@@ -42,6 +44,13 @@ Status.Metric = (function() {
             let chart = renderChart(renderContext, metricId, metricSuffix);
 
             refreshData(chart, metricId, metricSuffix);
+
+            //Refresh data every minutes
+            let timer = setInterval(() => {
+                refreshData(chart, metricId, metricSuffix);
+            }, 60 * 1000)
+
+            timers.push(timer);
         });
     }
     
@@ -112,7 +121,7 @@ Status.Metric = (function() {
                             var firstTick = ticks[0];
                             var i, ilen, val, tick, currMajor, lastMajor;
 
-                            val = moment.utc(ticks[0].value);
+                            val = moment.utc(firstTick.value);
                             lastMajor = val.get(majorUnit);
 
                             for (i = 1, ilen = ticks.length; i < ilen; i++) {
@@ -229,6 +238,7 @@ Status.Metric = (function() {
             })
             .then(result => {
                 let dataset = chart.data.datasets[0];
+                dataset.data = [];
                 result.forEach(dataPoint => {
                     dataset.data.push({x: moment.utc(dataPoint.created_at), y: dataPoint.value});
                 });
