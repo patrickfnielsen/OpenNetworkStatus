@@ -119,8 +119,8 @@ namespace OpenNetworkStatus
             {
                 app.UseWhen(context => !context.Request.Path.StartsWithSegments("/api"), subApp =>
                 {
-                    app.UseStatusCodePagesWithRedirects("/error/code/{0}");
-                    app.UseExceptionHandler("/error/code/500");
+                    subApp.UseStatusCodePagesWithRedirects("/error/code/{0}");
+                    subApp.UseExceptionHandler("/error/code/500");
                 });
             }
 
