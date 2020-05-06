@@ -91,7 +91,7 @@ Status.Metric = (function () {
                         time: {
                             tooltipFormat: "dddd, MMM D, HH:mm",
                             displayFormats: {
-                                minute: "mm:ss",
+                                minute: "HH:mm:ss",
                                 hour: "HH:mm"
                             }
                         },
@@ -139,6 +139,7 @@ Status.Metric = (function () {
                             drawBorder: false
                         },
                         ticks: {
+                            beginAtZero: true,
                             lineHeight: 3,
                             padding: 8,
                             fontColor: chartTickColor
