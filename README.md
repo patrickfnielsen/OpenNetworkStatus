@@ -1,6 +1,5 @@
 # OpenNetworkStatus
 Open Source, API driven status page
-
 ![Image of OpenNetworkStatus](https://github.com/patrickfnielsen/OpenNetworkStatus/blob/master/screenshots/screenshot.png)
 
 ## Testing
