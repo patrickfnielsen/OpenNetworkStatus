@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -37,14 +38,14 @@ namespace OpenNetworkStatus
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors();
-            
+
             var builder = services.AddControllersWithViews().AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); //Allow posting enums as strings and not only integers
                 options.JsonSerializerOptions.Converters.Add(new DateTimeConverter()); //Make sure API only returns UTC Timezone (in/out)
                 options.JsonSerializerOptions.PropertyNamingPolicy = new JsonSnakeCaseNamingPolicy(); //snake_case all properties
             });
-            
+
             if (Env.IsDevelopment())
             {
                 builder.AddRazorRuntimeCompilation();
@@ -89,7 +90,7 @@ namespace OpenNetworkStatus
                     },
                     ValidIssuer = siteOptions.Jwt.ValidIssuer,
                     ValidAudience = siteOptions.Jwt.ValidAudience,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(siteOptions.Jwt.IssuerSigningKey))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(siteOptions.Jwt.IssuerSigningKey)),
                 };
             });
         }
@@ -116,10 +117,11 @@ namespace OpenNetworkStatus
             }
             else
             {
-                app.UseStatusCodePagesWithRedirects("/error/code/{0}");
-                app.UseExceptionHandler("/error/code/500");
-
-                app.UseHsts();
+                app.UseWhen(context => !context.Request.Path.StartsWithSegments("/api"), subApp =>
+                {
+                    app.UseStatusCodePagesWithRedirects("/error/code/{0}");
+                    app.UseExceptionHandler("/error/code/500");
+                });
             }
 
             app.UseCors(
