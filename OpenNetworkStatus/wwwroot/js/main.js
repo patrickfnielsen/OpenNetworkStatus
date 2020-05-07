@@ -91,8 +91,10 @@ Status.Metric = (function () {
                         time: {
                             tooltipFormat: "dddd, MMM D, HH:mm",
                             displayFormats: {
-                                minute: "HH:mm:ss",
-                                hour: "HH:mm"
+                                minute: "HH:mm",
+                                hour: "HH:mm",
+                                min: '00:00',
+                                max: '23:59'
                             }
                         },
                         gridLines: {
