@@ -89,12 +89,11 @@ Status.Metric = (function () {
                         type: "time",
                         distribution: "series",
                         time: {
+                            minUnit: "hour",
                             tooltipFormat: "dddd, MMM D, HH:mm",
                             displayFormats: {
                                 minute: "HH:mm",
                                 hour: "HH:mm",
-                                min: '00:00',
-                                max: '23:59'
                             }
                         },
                         gridLines: {
