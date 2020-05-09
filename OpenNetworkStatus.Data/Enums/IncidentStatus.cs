@@ -5,6 +5,7 @@ namespace OpenNetworkStatus.Data.Enums
         Investigating = 1,
         Identified = 2,
         Monitoring = 3,
-        Resolved = 4
+        Update = 4,
+        Resolved = 5
     }
 }

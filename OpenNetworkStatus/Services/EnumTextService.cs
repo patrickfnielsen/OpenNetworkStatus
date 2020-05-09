@@ -54,6 +54,7 @@ namespace OpenNetworkStatus.Services
                 IncidentStatus.Investigating         => "Investigating",
                 IncidentStatus.Identified            => "Identified",
                 IncidentStatus.Monitoring            => "Monitoring",
+                IncidentStatus.Update                => "Update",
                 IncidentStatus.Resolved              => "Resolved",
                 _                                    => "Unknown"
             };
