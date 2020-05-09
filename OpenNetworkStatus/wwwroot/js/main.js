@@ -115,22 +115,28 @@ Status.Metric = (function () {
                             maxRotation: 0,
                             sampleSize: 100
                         },
-                        afterBuildTicks: function(scale, ticks) {
-                            if(ticks == null) return;
+                        afterBuildTicks: function(_, ticks) {
+                            //This is a hack, and I'm sure there is a better way to do this, fell free to refactor it
+                            //we do this to control the ticks, and the major unit is always 3 hours a part as i've found that to look best
+                            ticks = [];
+                            let lastDay = moment.utc().startOf("hour").subtract(1, "days");
+                            let modulo = lastDay.local().hour() % 3;
 
-                            var majorUnit = scale._majorUnit;
-                            var firstTick = ticks[0];
-                            var i, ilen, val, tick, currMajor, lastMajor;
+                            if (modulo === 0) {
+                                lastDay.add(3, "hours")
+                            } else if (modulo === 1) {
+                                lastDay.add(2, "hours")
+                            } else {
+                                lastDay.add(1, "hours")
+                            }
 
-                            val = moment.utc(firstTick.value);
-                            lastMajor = val.get(majorUnit);
+                            ticks.push({ major: lastDay.local().hour() == 0, value: lastDay.valueOf() });
 
-                            for (i = 1, ilen = ticks.length; i < ilen; i++) {
-                                tick = ticks[i];
-                                val = moment.utc(tick.value);
-                                currMajor = val.get(majorUnit);
-                                tick.major = currMajor !== lastMajor;
-                                lastMajor = currMajor;
+
+                            for (x = 1; x < 8; x++) {
+                                lastDay.add(3, "hours")
+
+                                ticks.push({ major: lastDay.local().hour() == 0, value: lastDay.valueOf() });
                             }
                             return ticks;
                         }
@@ -241,6 +247,13 @@ Status.Metric = (function () {
             .then(result => {
                 let dataset = chart.data.datasets[0];
                 dataset.data = [];
+
+                while (currentDate <= maxDate) {
+                    d = moment.utc(currentDate);
+                    newDates.push((d.getMonth() + 1) + '/' + d.getDate() + '/' + d.getFullYear());
+                    currentDate += (24 * 60 * 60 * 1000); // add one day
+                }
+
                 result.forEach(dataPoint => {
                     dataset.data.push({x: moment.utc(dataPoint.created_at), y: dataPoint.value});
                 });
