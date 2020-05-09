@@ -248,12 +248,6 @@ Status.Metric = (function () {
                 let dataset = chart.data.datasets[0];
                 dataset.data = [];
 
-                while (currentDate <= maxDate) {
-                    d = moment.utc(currentDate);
-                    newDates.push((d.getMonth() + 1) + '/' + d.getDate() + '/' + d.getFullYear());
-                    currentDate += (24 * 60 * 60 * 1000); // add one day
-                }
-
                 result.forEach(dataPoint => {
                     dataset.data.push({x: moment.utc(dataPoint.created_at), y: dataPoint.value});
                 });
