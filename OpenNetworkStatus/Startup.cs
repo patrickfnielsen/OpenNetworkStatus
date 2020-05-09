@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using OpenNetworkStatus.Converters;
 using OpenNetworkStatus.Data;
 using OpenNetworkStatus.Models.Options;
@@ -63,8 +64,53 @@ namespace OpenNetworkStatus
                 )
             );
 
+            ConfigureSwagger(services);
             ConfigureAuthentication(services);
             ConfigureDependencies(services);
+        }
+
+        private void ConfigureSwagger(IServiceCollection services)
+        {
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo {
+                    Title = nameof(OpenNetworkStatus),
+                    Version = "v1",
+                    Contact = new OpenApiContact
+                    {
+                        Name = nameof(OpenNetworkStatus),
+                        Email = string.Empty,
+                        Url = new Uri("https://github.com/patrickfnielsen/OpenNetworkStatus/issues")
+                    }
+                });
+
+                //Add JWT to swagger
+                c.AddSecurityDefinition("JWT", new OpenApiSecurityScheme
+                {
+                    Description = "JWT Authorization header",
+                    BearerFormat = "JWT",
+                    Scheme = "bearer",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http
+                });
+
+                //Make sure Swagger UI requires a Bearer token specified
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                {
+                    {
+                        new OpenApiSecurityScheme()
+                        {
+                            Reference = new OpenApiReference()
+                            {
+                                Id = "JWT",
+                                Type = ReferenceType.SecurityScheme
+                            }
+                        },
+                        new string[] { }
+                    },
+                });
+            });
         }
 
         private void ConfigureAuthentication(IServiceCollection services)
@@ -124,10 +170,21 @@ namespace OpenNetworkStatus
                 });
             }
 
+            //Added swagger if enabled in config
+            if (siteOptions.CurrentValue.EnableSwagger)
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+                });
+            }
+
+            //Cors
             app.UseCors(
                 options => options.WithOrigins(siteOptions.CurrentValue.Cors.Origins).AllowAnyMethod()
             );
-            
+
             app.UseSerilogRequestLogging();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
