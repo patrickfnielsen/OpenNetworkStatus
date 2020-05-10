@@ -14,7 +14,8 @@ See the API section for how to change the password.
 All POST/PUT requests - and GET requests to the authentication endpoint - should be authorized with a JWT token in the authorization header.
 
 # API
-Basic API usage. Swagger support will be added in the next release.
+Basic API usage.
+For full api documentation see the swagger endpoint at /swagger
 
 ## Authentication: Login
 Login and retrive the JWT token used for subsequent requests to authenticate.
