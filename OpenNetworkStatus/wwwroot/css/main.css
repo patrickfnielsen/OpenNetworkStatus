@@ -38,6 +38,11 @@ strong, .title {
     }
 }
 
+.error-content strong {
+    color: #363636;
+    font-weight: 700;
+}
+
 .notification.status-green {
     background-color: var(--status-operational);
     color: #fff;
