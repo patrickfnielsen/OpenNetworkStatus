@@ -130,8 +130,7 @@ Status.Metric = (function () {
     }
 
     function calculateTicksForWeek(ticks) {
-        //This is a hack, and I'm sure there is a better way to do this, fell free to ref8ctor it
-        //we do this to control the ticks, and the major unit is alwlfalse hours a part as i've found that to look best
+        //This is a hack, and I'm sure there is a better way to do this, fell free to refactor it
         ticks = [];
   
         let lastDay = moment.utc().startOf("day").subtract(7, "days");
@@ -148,6 +147,7 @@ Status.Metric = (function () {
     function renderChart(ctx, metricId, metricSuffix) {
         let chartLineColor = Status.getColor("chart-line");
         let chartTickColor = Status.getColor("chart-ticks");
+
         return new Chart(ctx, {
             type: "line",
             data: {
@@ -309,10 +309,7 @@ Status.Metric = (function () {
     }
     
     function refreshData(chart, metricId, metricSuffix) {
-        url = window.location.origin + "/api/v1/metrics/" + metricId + "/datapoints";
-        if (timespan == "week") {
-            url += "/week";
-        }
+        url = generateMetricApiUrl();
 
         fetch(url)
             .then(data => {
@@ -331,6 +328,15 @@ Status.Metric = (function () {
                     chart.update();
                 }
             });
+    }
+
+    function generateMetricApiUrl() {
+        let url = window.location.origin + "/api/v1/metrics/" + metricId + "/datapoints";
+        if (timespan == "week") {
+            url += "/week";
+        }
+
+        return url;
     }
     
     function updateLastValue(metricId, newValue, metricSuffix) {
