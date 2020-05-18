@@ -200,7 +200,7 @@ Status.Metric = (function () {
                             },
                             source: "data",
                             padding: 1,
-                            fontColor: this.chartTickColor,
+                            fontColor: chartTickColor,
                             autoSkip: true,
                             autoSkipPadding: 75,
                             maxRotation: 0,
