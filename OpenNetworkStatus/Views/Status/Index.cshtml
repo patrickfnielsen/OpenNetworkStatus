@@ -33,21 +33,23 @@
             <partial name="Partial/_Metric" model="metric" />
         }
     </div>
+}
+
+<h1 class="page-title title is-6">INCIDENTS</h1>
+
+<div class="incident-container">
+    @foreach (var day in Model.StatusDays)
+    {
+        <partial name="Partial/_StatusDay" model="day" />
     }
+</div>
 
-    <h1 class="page-title title is-6">INCIDENTS</h1>
-
-    <div class="incident-container">
-        @foreach (var day in Model.StatusDays)
-        {
-            <partial name="Partial/_StatusDay" model="day" />
-        }
-    </div>
-
-    @section Scripts
+@section Scripts
 {
-        <script>document.addEventListener("DOMContentLoaded", function () {
-                Status.Metric.init();
-                Status.Collapsible.init();
-            });</script>
-    }
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Status.Metric.init();
+            Status.Collapsible.init();
+        });
+    </script>
+}
