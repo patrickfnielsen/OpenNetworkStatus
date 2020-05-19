@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -22,10 +23,14 @@ namespace OpenNetworkStatus.Services.MetricServices.Handlers
 
         public async Task<List<DataPointResource>> Handle(GetDataPointsForLastSevenDaysQuery request, CancellationToken cancellationToken)
         {
-            //Note: We currently get all records for the last seven days
-            //we might want to only get the records frome every 10, 20, or 30 minute - but that also depends on how often data is ingested!
+            //Note: We currently get all records for the last seven days, and then computre what records to display below
             var dataPoints = await _dataContext.DataPoints
                 .GetDataPointsForLast(day: 7, request.MetricId).AsNoTracking().ToListAsync(cancellationToken);
+
+            //Todo: This must be possible to do directly in the database.
+            var ticks = TimeSpan.FromMinutes(30).Ticks;
+            dataPoints = dataPoints.GroupBy(s => s.CreatedAt.Ticks / ticks)
+                .Select(s => s.First()).ToList();
 
             return dataPoints.Select(DataPointResource.FromDataPoint).ToList();
         }

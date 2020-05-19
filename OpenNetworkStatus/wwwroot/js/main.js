@@ -180,6 +180,7 @@ Status.Metric = (function () {
                         type: "time",
                         distribution: "series",
                         time: {
+                            isoWeekday: true,
                             minUnit: "hour",
                             tooltipFormat: "dddd, MMM D, HH:mm",
                             displayFormats: {
