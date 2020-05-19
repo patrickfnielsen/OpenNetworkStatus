@@ -207,7 +207,7 @@ Status.Metric = (function () {
                             sampleSize: 100
                         },
                         afterBuildTicks: function(_, ticks) {
-                            calculateTicks(ticks);
+                            return calculateTicks(ticks);
                         }
                     }],
                     yAxes: [{
