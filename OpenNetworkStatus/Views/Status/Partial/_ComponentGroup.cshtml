@@ -1,4 +1,3 @@
-@using Microsoft.EntityFrameworkCore.Internal
 @model OpenNetworkStatus.Data.Entities.ComponentGroup
 @{
     var worstStatus = Model.Components.Any() ? Model.Components.Max(x => x.Status) : ComponentStatus.Operational;

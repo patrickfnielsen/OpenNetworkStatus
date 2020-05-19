@@ -114,6 +114,21 @@ namespace OpenNetworkStatus.Controllers.Api
             return datapointResources;
         }
 
+        [HttpGet("{metricId}/datapoints/week")]
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<DataPointResource>>> GetDataPointsForLastWeekAsync([FromRoute]GetDataPointsForLastSevenDaysQuery dataPointQuery)
+        {
+            var datapointResources = await _mediator.Send(dataPointQuery);
+            if (datapointResources == null)
+            {
+                return NotFound();
+            }
+
+            return datapointResources;
+        }
+
         [HttpPost("{id}/datapoints")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]

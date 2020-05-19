@@ -9,7 +9,7 @@
         let style = getComputedStyle(document.documentElement);
         return style.getPropertyValue("--" + name).trim();
     }
-    
+
     function hook(name) {
         return document.querySelectorAll("[data-js-hook='" + name + "']");
     }
@@ -21,7 +21,9 @@
 })();
 
 Status.Metric = (function () {
-    let timers = []
+    let timers = [];
+    let charts = {};
+    let timespan = "day";
 
     function init(options) {
         Status.Metric.options = options;
@@ -29,13 +31,51 @@ Status.Metric = (function () {
         Chart.Tooltip.positioners.custom = function(elements, eventPosition) {
             return { x: 5, y: 5};
         };
-        
+
+        hookTimespanButtons();
         renderAllCharts();
+    }
+
+    function hookTimespanButtons() {
+        let buttons = Status.hook("metric-timespan");
+
+        buttons.forEach(item => {
+            item.addEventListener("click", onTimespanClick);
+        });
+    }
+
+    function onTimespanClick() {
+        let newTimespan = this.attributes["data-timespan"].value;
+        let allMetrics = Status.hook("metric");
+        let timespanButtons = Status.hook("metric-timespan");
+
+        if (timespan == newTimespan) {
+            return;
+        }
+
+        //Remove 'is-selected' class
+        timespanButtons.forEach(button => {
+            button.classList.remove("is-selected")
+        });
+
+        //Add 'is-selected' to the new timespan button
+        this.classList.add("is-selected");
+
+        //Set new timespan and re-render all charts
+        allMetrics.forEach(item => {
+            let metricId = item.attributes["data-metric-id"].value;
+            let metricSuffix = item.attributes["data-metric-suffix"].value;
+
+            item.setAttribute("data-metric-timespan", newTimespan);
+            timespan = newTimespan;
+
+            refreshData(charts[metricId], metricId, metricSuffix);
+        });
     }
     
     function renderAllCharts() {
         let metrics = Status.hook("metric");
-        
+
         metrics.forEach(item => {           
             let metricId = item.attributes["data-metric-id"].value;
             let metricSuffix = item.attributes["data-metric-suffix"].value;
@@ -50,13 +90,64 @@ Status.Metric = (function () {
                 refreshData(chart, metricId, metricSuffix);
             }, 60 * 1000)
 
+            charts[metricId] = chart;
             timers.push(timer);
         });
     }
-    
+
+    function calculateTicks(ticks) {
+        if (timespan == "week") {
+            return calculateTicksForWeek(ticks);
+        } else {
+            return calculateTicksForDay(ticks);
+        }
+    }
+
+    function calculateTicksForDay(ticks) {
+        //This is a hack, and I'm sure there is a better way to do this, fell free to refactor it
+        //we do this to control the ticks, and the major unit is always 3 hours a part as i've found that to look best
+        ticks = [];
+        let lastDay = moment.utc().startOf("hour").subtract(1, "days");
+        let modulo = lastDay.local().hour() % 3;
+
+        if (modulo === 0) {
+            lastDay.add(3, "hours")
+        } else if (modulo === 1) {
+            lastDay.add(2, "hours")
+        } else {
+            lastDay.add(1, "hours")
+        }
+
+        ticks.push({ major: lastDay.local().hour() == 0, value: lastDay.valueOf() });
+
+
+        for (x = 1; x < 8; x++) {
+            lastDay.add(3, "hours")
+
+            ticks.push({ major: lastDay.local().hour() == 0, value: lastDay.valueOf() });
+        }
+        return ticks;
+    }
+
+    function calculateTicksForWeek(ticks) {
+        //This is a hack, and I'm sure there is a better way to do this, fell free to refactor it
+        ticks = [];
+  
+        let lastDay = moment.utc().startOf("day").subtract(7, "days");
+        ticks.push({ major: false, value: lastDay.valueOf() });
+
+        for (x = 1; x < 7; x++) {
+            lastDay.add(1, "day")
+
+            ticks.push({ major: false, value: lastDay.valueOf() });
+        }
+        return ticks;
+    }
+
     function renderChart(ctx, metricId, metricSuffix) {
         let chartLineColor = Status.getColor("chart-line");
         let chartTickColor = Status.getColor("chart-ticks");
+
         return new Chart(ctx, {
             type: "line",
             data: {
@@ -116,29 +207,7 @@ Status.Metric = (function () {
                             sampleSize: 100
                         },
                         afterBuildTicks: function(_, ticks) {
-                            //This is a hack, and I'm sure there is a better way to do this, fell free to refactor it
-                            //we do this to control the ticks, and the major unit is always 3 hours a part as i've found that to look best
-                            ticks = [];
-                            let lastDay = moment.utc().startOf("hour").subtract(1, "days");
-                            let modulo = lastDay.local().hour() % 3;
-
-                            if (modulo === 0) {
-                                lastDay.add(3, "hours")
-                            } else if (modulo === 1) {
-                                lastDay.add(2, "hours")
-                            } else {
-                                lastDay.add(1, "hours")
-                            }
-
-                            ticks.push({ major: lastDay.local().hour() == 0, value: lastDay.valueOf() });
-
-
-                            for (x = 1; x < 8; x++) {
-                                lastDay.add(3, "hours")
-
-                                ticks.push({ major: lastDay.local().hour() == 0, value: lastDay.valueOf() });
-                            }
-                            return ticks;
+                            calculateTicks(ticks);
                         }
                     }],
                     yAxes: [{
@@ -240,7 +309,9 @@ Status.Metric = (function () {
     }
     
     function refreshData(chart, metricId, metricSuffix) {
-        fetch(window.location.origin + "/api/v1/metrics/" + metricId + "/datapoints")
+        url = generateMetricApiUrl(metricId);
+
+        fetch(url)
             .then(data => {
                 return data.json();
             })
@@ -257,6 +328,15 @@ Status.Metric = (function () {
                     chart.update();
                 }
             });
+    }
+
+    function generateMetricApiUrl(metricId) {
+        let url = window.location.origin + "/api/v1/metrics/" + metricId + "/datapoints";
+        if (timespan == "week") {
+            url += "/week";
+        }
+
+        return url;
     }
     
     function updateLastValue(metricId, newValue, metricSuffix) {

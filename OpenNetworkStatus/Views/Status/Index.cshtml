@@ -4,28 +4,33 @@
     ViewData["StatusIcon"] = EnumTextService.GetSiteStatusIcon(Model.SiteStatus.Status);
 }
 
-<partial name="Partial/_SiteStatus" model="@Model.SiteStatus"/>
+<partial name="Partial/_SiteStatus" model="@Model.SiteStatus" />
 
-<div class="component-container">    
+<div class="component-container">
     @foreach (var component in Model.Components)
     {
-        <partial name="Partial/_Component" model="component"/>
+        <partial name="Partial/_Component" model="component" />
     }
-    
+
     @foreach (var component in Model.ComponentGroups)
     {
-        <partial name="Partial/_ComponentGroup" model="component"/>
+        <partial name="Partial/_ComponentGroup" model="component" />
     }
 </div>
 
 @if (Model.Metrics.Any())
 {
-    <h1 class="page-title title is-6">SYSTEM METRICS</h1>
-    
-    <div class="metric-container">    
+    <div class="metric-timespan-container page-title">
+        <h1 class="title is-6">SYSTEM METRICS</h1>
+        <div class="buttons has-addons">
+            <a class="button is-small is-selected" data-js-hook="metric-timespan" data-timespan="day">Day</a>
+            <a class="button is-small" data-js-hook="metric-timespan" data-timespan="week">Week</a>
+        </div>
+    </div>
+    <div class="metric-container">
         @foreach (var metric in Model.Metrics)
         {
-            <partial name="Partial/_Metric" model="metric"/>
+            <partial name="Partial/_Metric" model="metric" />
         }
     </div>
 }
@@ -35,14 +40,14 @@
 <div class="incident-container">
     @foreach (var day in Model.StatusDays)
     {
-        <partial name="Partial/_StatusDay" model="day"/>
+        <partial name="Partial/_StatusDay" model="day" />
     }
 </div>
 
 @section Scripts
 {
     <script>
-        document.addEventListener("DOMContentLoaded", function(){
+        document.addEventListener("DOMContentLoaded", function () {
             Status.Metric.init();
             Status.Collapsible.init();
         });

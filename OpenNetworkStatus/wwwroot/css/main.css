@@ -6,6 +6,7 @@
     --status-performance-issue: #faa61a;
     --status-partial-outage: #fa890b;
     --status-major-outage: #fa563a;
+    --button-color-selected: #7a7a7a;
     --chart-line: #7a7a7a;
     --chart-ticks: #99aab5;
 }
@@ -175,6 +176,20 @@ strong, .title {
 
 .page-title {
     margin-top: 65px;
+}
+
+.metric-timespan-container .title {
+    display: inline-block;
+}
+
+.metric-timespan-container .buttons {
+    float: right;
+}
+
+.metric-timespan-container .buttons .is-selected {
+    background-color: var(--button-color-selected);
+    border-color: transparent;
+    color: #fff;
 }
 
 .metric-container .metric-chart-container {
