@@ -133,13 +133,13 @@ Status.Metric = (function () {
         //This is a hack, and I'm sure there is a better way to do this, fell free to refactor it
         ticks = [];
   
-        let lastDay = moment.utc().startOf("day").subtract(7, "days");
-        ticks.push({ major: false, value: lastDay.valueOf() });
+        let lastDay = moment().endOf("day").utc().subtract(7, "days");
+        ticks.push({ major: true, value: lastDay.valueOf() });
 
         for (x = 1; x < 7; x++) {
             lastDay.add(1, "day")
 
-            ticks.push({ major: false, value: lastDay.valueOf() });
+            ticks.push({ major: true, value: lastDay.valueOf() });
         }
         return ticks;
     }
