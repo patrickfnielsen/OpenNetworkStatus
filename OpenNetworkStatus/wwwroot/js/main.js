@@ -309,7 +309,7 @@ Status.Metric = (function () {
     }
     
     function refreshData(chart, metricId, metricSuffix) {
-        url = generateMetricApiUrl();
+        url = generateMetricApiUrl(metricId);
 
         fetch(url)
             .then(data => {
@@ -330,7 +330,7 @@ Status.Metric = (function () {
             });
     }
 
-    function generateMetricApiUrl() {
+    function generateMetricApiUrl(metricId) {
         let url = window.location.origin + "/api/v1/metrics/" + metricId + "/datapoints";
         if (timespan == "week") {
             url += "/week";
