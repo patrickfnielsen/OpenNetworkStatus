@@ -2,7 +2,7 @@
 ![.NET Core](https://github.com/patrickfnielsen/OpenNetworkStatus/workflows/.NET%20Core/badge.svg?branch=master&event=push)
 
 Open Source, API driven status page
-![Image of OpenNetworkStatus](https://github.com/patrickfnielsen/OpenNetworkStatus/blob/master/screenshots/screenshot.png)
+![Image of OpenNetworkStatus](https://github.com/patrickfnielsen/OpenNetworkStatus/blob/master/screenshots/main.png)
 
 ## Testing
 Run the docker-compose file, using "docker-compose up"
