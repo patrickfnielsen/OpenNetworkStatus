@@ -52,6 +52,7 @@ namespace OpenNetworkStatus.Controllers.Api
         [HttpPost("user")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateAsync([FromBody]AddUserCommand userCommand)
         {
@@ -71,6 +72,7 @@ namespace OpenNetworkStatus.Controllers.Api
         [HttpGet("user/{id}")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<UserResource>> GetUserAsync([FromRoute]GetUserByIdQuery userQuery)
         {
@@ -87,6 +89,7 @@ namespace OpenNetworkStatus.Controllers.Api
         [HttpPut("user/{id}")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<UserResource>> UpdateUserAsync([FromRoute]int id, UpdateUserCommand userCommand)
         {
@@ -104,6 +107,7 @@ namespace OpenNetworkStatus.Controllers.Api
         [HttpDelete("user/{id}")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteComponentAsync([FromRoute]DeleteUserCommand userCommand)
         {

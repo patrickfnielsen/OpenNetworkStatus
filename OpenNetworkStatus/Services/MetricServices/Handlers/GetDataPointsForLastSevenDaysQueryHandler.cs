@@ -28,6 +28,7 @@ namespace OpenNetworkStatus.Services.MetricServices.Handlers
                 .GetDataPointsForLast(day: 7, request.MetricId).AsNoTracking().ToListAsync(cancellationToken);
 
             //Todo: This must be possible to do directly in the database.
+            //Note: This might remove peaks, we might not want to do that!
             var ticks = TimeSpan.FromMinutes(30).Ticks;
             dataPoints = dataPoints.GroupBy(s => s.CreatedAt.Ticks / ticks)
                 .Select(s => s.First()).ToList();
