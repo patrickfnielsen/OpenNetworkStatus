@@ -1,6 +1,6 @@
 @model OpenNetworkStatus.Data.Entities.Incident
 
-<div class="incident-container" data-js-hook="incident" data-incident-id="@Model.Id" data-incident-impact="@Model.Impact">
+<div class="incident-container" id="incident-@Model.Id" data-js-hook="incident" data-incident-id="@Model.Id" data-incident-impact="@Model.Impact">
     <h3 class="incident-title title is-5">@Model.Title</h3>
     
     <div class="incident-updates" data-incident-updates="">

@@ -1,6 +1,6 @@
 @model OpenNetworkStatus.Data.Entities.Metric
 
-<div class="tile metric-container metric-border" data-js-hook="metric" data-metric-id="@Model.Id" data-metric-suffix="@Model.Suffix" data-metric-timespan="day">
+<div class="tile metric-container metric-border" id="metric-@Model.Id" data-js-hook="metric" data-metric-id="@Model.Id" data-metric-suffix="@Model.Suffix" data-metric-timespan="day">
     <div class="inner-container is-clearfix">
         <span class="metric-name" data-metric-name="@Model.Title">@Model.Title</span>
         
