@@ -1,0 +1,25 @@
+﻿@model IncidentViewModel
+@{
+    ViewBag.Title = Model.Title;
+    Model.Updates.Reverse();
+}
+
+
+    <div class="incident-view-container">
+        <h1 class="page-title title is-4 has-text-centered impact-@Model.Impact.ToString().ToLower()">@Model.Title</h1>
+
+        @foreach (var update in Model.Updates)
+        {
+            <div class="columns">
+                <div class="column is-one-fifth">
+                    <strong>@update.StatusText</strong>
+                </div>
+                <div class="column">
+                    @update.Message
+
+                    <br>
+                    <small>@update.CreatedAt.ToString("MMM dd, HH:mm") UTC</small>
+                </div>
+            </div>
+        }
+    </div>

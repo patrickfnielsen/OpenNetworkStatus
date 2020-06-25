@@ -245,3 +245,12 @@ strong, .title {
 span[data-tooltip] {
     border-bottom: none !important;
 }
+
+.incident-view-container {
+    max-width: 80%;
+    margin: 0 auto;
+}
+
+.incident-view-container .page-title {
+    margin-bottom: 3rem;
+}

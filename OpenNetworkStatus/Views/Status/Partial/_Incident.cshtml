@@ -1,7 +1,7 @@
 @model OpenNetworkStatus.Data.Entities.Incident
 
 <div class="incident-container" id="incident-@Model.Id" data-js-hook="incident" data-incident-id="@Model.Id" data-incident-impact="@Model.Impact">
-    <h3 class="incident-title impact-@Model.Impact title is-5">@Model.Title</h3>
+    <h3 class="incident-title impact-@Model.Impact.ToString().ToLower()"><a class="title is-5" href="/incident/@Model.Id"> @Model.Title</a></h3>
     
     <div class="incident-updates" data-incident-updates="">
         @foreach(var update in Model.Updates.OrderByDescending(x => x.CreatedAt))
