@@ -39,3 +39,8 @@ html {
     font-size: 1.1em;
     font-weight: 500;
 }
+
+.menu-list a.is-active {
+    background-color: #f1f1f1;
+    color: #383e4b;
+}

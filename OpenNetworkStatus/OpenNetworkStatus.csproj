@@ -9,12 +9,6 @@
       <_ContentIncludedByDefault Remove="wwwroot\lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.min.js" />
       <_ContentIncludedByDefault Remove="wwwroot\lib\jquery-validation-unobtrusive\LICENSE.txt" />
       <_ContentIncludedByDefault Remove="wwwroot\js\components\MetricChart.vue" />
-      <_ContentIncludedByDefault Remove="Areas\Admin\Views\Component\Create.cshtml" />
-      <_ContentIncludedByDefault Remove="Areas\Admin\Views\Component\Delete.cshtml" />
-      <_ContentIncludedByDefault Remove="Areas\Admin\Views\Component\Edit.cshtml" />
-      <_ContentIncludedByDefault Remove="Areas\Admin\Views\Component\Index.cshtml" />
-      <_ContentIncludedByDefault Remove="Areas\Admin\Views\_ViewImports.cshtml" />
-      <_ContentIncludedByDefault Remove="Areas\Admin\Views\_ViewStart.cshtml" />
     </ItemGroup>
 
     <ItemGroup>
@@ -54,5 +48,6 @@
       <Folder Include="Services\IncidentServices\Commands\" />
       <Folder Include="Services\IncidentServices\Handlers\" />
       <Folder Include="Services\IncidentServices\Queries\" />
+      <Folder Include="Views\Incident\" />
     </ItemGroup>
 </Project>
