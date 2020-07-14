@@ -368,13 +368,16 @@ Status.Collapsible = (function() {
     
     function onClick() {
         let icon = this.querySelectorAll(".icon ion-icon")[0];
+        let status = this.querySelectorAll(".component-status")[0];
         let content = this.nextElementSibling;
         let isActive = content.classList.toggle("is-active");
         
         if (isActive) {
             icon.setAttribute("name", "remove-circle-outline");
+            status.style.display = "none";
         } else {
             icon.setAttribute("name", "add-circle-outline");
+            status.style.display = "inline-block";
         } 
     }
     
