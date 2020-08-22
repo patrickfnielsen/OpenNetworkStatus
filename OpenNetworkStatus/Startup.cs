@@ -182,7 +182,7 @@ namespace OpenNetworkStatus
 
             //Cors
             app.UseCors(
-                options => options.WithOrigins(siteOptions.CurrentValue.Cors.Origins).AllowAnyMethod()
+                options => options.WithOrigins(siteOptions.CurrentValue.Cors.Origins).AllowAnyMethod().AllowAnyHeader()
             );
 
             app.UseSerilogRequestLogging();
