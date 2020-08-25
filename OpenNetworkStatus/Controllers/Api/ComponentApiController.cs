@@ -66,6 +66,23 @@ namespace OpenNetworkStatus.Controllers.Api
             return componentResource;
         }
 
+        [HttpPut("{id}/status")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<ComponentResource>> UpdateComponentStatusAsync([FromRoute] int id, UpdateComponentStatusCommand componentCommand)
+        {
+            componentCommand.Id = id;
+
+            var componentResource = await _mediator.Send(componentCommand);
+            if (componentResource == null)
+            {
+                return NotFound();
+            }
+
+            return componentResource;
+        }
+
         [HttpGet("{id}")]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
