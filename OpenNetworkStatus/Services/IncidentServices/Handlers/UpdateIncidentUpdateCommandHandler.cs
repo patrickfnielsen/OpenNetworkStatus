@@ -24,13 +24,14 @@ namespace OpenNetworkStatus.Services.IncidentServices.Handlers
             var update = new IncidentUpdate
             {
                 Id = request.Id,
-                IncidentId = request.IncidentId,
                 Status = request.Status,
                 Message = request.Message
             };
 
-            _dataContext.Entry(update).State = EntityState.Modified;
-            
+            _dataContext.Attach(update);
+            _dataContext.Entry(update).Property(x => x.Status).IsModified = true;
+            _dataContext.Entry(update).Property(x => x.Message).IsModified = true;
+
             try
             {
                 await _dataContext.SaveChangesAsync(cancellationToken);

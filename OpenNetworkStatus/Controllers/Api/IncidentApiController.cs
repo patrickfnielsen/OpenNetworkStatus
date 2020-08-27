@@ -125,7 +125,7 @@ namespace OpenNetworkStatus.Controllers.Api
             return PageService.CreatePaginatedResponse(incidentUpdateQuery.Page, incidentUpdateQuery.Limit, updateResources);
         }
 
-        [HttpGet("{incidentId}/updates/{updateId}")]
+        [HttpGet("updates/{updateId}")]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -140,13 +140,12 @@ namespace OpenNetworkStatus.Controllers.Api
             return updateResource;
         }
         
-        [HttpPut("{incidentId}/updates/{updateId}")]
+        [HttpPut("updates/{updateId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IncidentUpdateResource>> UpdateIncidentUpdateAsync([FromRoute]int incidentId, [FromRoute]int updateId, [FromBody]UpdateIncidentUpdateCommand incidentUpdateCommand)
+        public async Task<ActionResult<IncidentUpdateResource>> UpdateIncidentUpdateAsync([FromRoute]int updateId, [FromBody]UpdateIncidentUpdateCommand incidentUpdateCommand)
         {
             incidentUpdateCommand.Id = updateId;
-            incidentUpdateCommand.IncidentId = incidentId;
 
             var updateResource = await _mediator.Send(incidentUpdateCommand);
             if (updateResource == null)

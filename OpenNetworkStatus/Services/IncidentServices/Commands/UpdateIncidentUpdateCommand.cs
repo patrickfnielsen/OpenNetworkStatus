@@ -10,8 +10,6 @@ namespace OpenNetworkStatus.Services.IncidentServices.Commands
     {
         internal int Id { get; set; }
 
-        internal int IncidentId { get; set; }
-
         [RequiredEnum]
         public IncidentStatus Status { get; set; }
 
