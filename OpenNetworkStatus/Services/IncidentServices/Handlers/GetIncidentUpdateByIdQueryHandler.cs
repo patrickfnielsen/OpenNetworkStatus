@@ -1,34 +1,30 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using OpenNetworkStatus.Data;
 using OpenNetworkStatus.Services.IncidentServices.Queries;
 using OpenNetworkStatus.Services.IncidentServices.Resources;
 
 namespace OpenNetworkStatus.Services.IncidentServices.Handlers
 {
-    public class GetIncidentByIdQueryHandler : IRequestHandler<GetIncidentByIdQuery, IncidentResource>
+    public class GetIncidentUpdateByIdQueryHandler : IRequestHandler<GetIncidentUpdateByIdQuery, IncidentUpdateResource>
     {
         private readonly StatusDataContext _dataContext;
         
-        public GetIncidentByIdQueryHandler(StatusDataContext dataContext)
+        public GetIncidentUpdateByIdQueryHandler(StatusDataContext dataContext)
         {
             _dataContext = dataContext;
         }
 
-        public async Task<IncidentResource> Handle(GetIncidentByIdQuery request, CancellationToken cancellationToken)
+        public async Task<IncidentUpdateResource> Handle(GetIncidentUpdateByIdQuery request, CancellationToken cancellationToken)
         {
-            var incident = await _dataContext.Incidents
-                .Include(x => x.Updates)
-                .SingleOrDefaultAsync(x => x.Id == request.IncidentId);
-
-            if (incident == null)
+            var update = await _dataContext.IncidentUpdates.FindAsync(request.UpdateId);
+            if (update == null)
             {
                 return null;
             }
 
-            return IncidentResource.FromIncident(incident);
+            return IncidentUpdateResource.FromIncidentUpdate(update);
         }
     }
 }
