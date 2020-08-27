@@ -73,6 +73,8 @@ namespace OpenNetworkStatus
         {
             services.AddSwaggerGen(c =>
             {
+                c.CustomSchemaIds(x => x.FullName);
+
                 c.SwaggerDoc("v1", new OpenApiInfo {
                     Title = nameof(OpenNetworkStatus),
                     Version = "v1",
