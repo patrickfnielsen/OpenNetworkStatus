@@ -1,3 +1,4 @@
+using System;
 using OpenNetworkStatus.Data.Entities;
 
 namespace OpenNetworkStatus.Services.MetricServices.Resources
@@ -13,8 +14,11 @@ namespace OpenNetworkStatus.Services.MetricServices.Resources
         public string Suffix { get; set; }
         
         public string Description { get; set; }
-        
-        
+
+        public DateTime CreatedAt { get; set; }
+
+        public DateTime UpdatedAt { get; set; }
+
         public static MetricResource FromMetric(Metric metric)
         {
             return new MetricResource
@@ -23,7 +27,9 @@ namespace OpenNetworkStatus.Services.MetricServices.Resources
                 Position = metric.Position,
                 Title = metric.Title,
                 Suffix = metric.Suffix,
-                Description = metric.Description
+                Description = metric.Description,
+                CreatedAt = metric.CreatedAt,
+                UpdatedAt = metric.UpdatedAt
             };
         }
     }
