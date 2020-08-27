@@ -6,6 +6,7 @@ using OpenNetworkStatus.Services.IncidentServices.Queries;
 
 namespace OpenNetworkStatus.Controllers
 {
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class IncidentController : Controller
     {
         private readonly IMediator _mediator;
