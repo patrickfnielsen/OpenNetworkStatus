@@ -25,6 +25,7 @@ namespace OpenNetworkStatus.Services.ComponentGroupServices.Handlers
         {
             var groups = await _dataContext.ComponentGroups
                 .Page(request.Page, request.Limit)
+                .Include(x => x.Components)
                 .ComponentGroupOrder()
                 .AsNoTracking()
                 .ToListAsync(cancellationToken);
