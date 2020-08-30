@@ -62,15 +62,15 @@ namespace OpenNetworkStatus.Controllers.Api
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<List<UserResource>>> GeAllUserAsync([FromRoute] GetAllUsersQuery userQuery)
+        public async Task<ActionResult<List<UserResource>>> GetUsersAsync([FromRoute] GetAllUsersQuery userQuery)
         {
-            var user = await _mediator.Send(userQuery);
-            if (user == null)
+            var users = await _mediator.Send(userQuery);
+            if (users == null)
             {
                 return NotFound();
             }
 
-            return user;
+            return users;
         }
 
 
