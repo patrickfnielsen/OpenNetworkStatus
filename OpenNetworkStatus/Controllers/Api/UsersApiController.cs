@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Net.Mime;
 using System.Threading.Tasks;
 using MediatR;
@@ -8,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using OpenNetworkStatus.Services.Authentication.Commands;
 using OpenNetworkStatus.Services.Authentication.Queries;
 using OpenNetworkStatus.Services.Authentication.Resources;
+using OpenNetworkStatus.Services.PageServices;
+using OpenNetworkStatus.Services.PageServices.Resources;
 
 namespace OpenNetworkStatus.Controllers.Api
 {
@@ -62,7 +63,7 @@ namespace OpenNetworkStatus.Controllers.Api
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<List<UserResource>>> GetUsersAsync([FromRoute] GetAllUsersQuery userQuery)
+        public async Task<ActionResult<PagedResponse<UserResource>>> GetUsersAsync([FromRoute] GetAllUsersQuery userQuery)
         {
             var users = await _mediator.Send(userQuery);
             if (users == null)
@@ -70,7 +71,7 @@ namespace OpenNetworkStatus.Controllers.Api
                 return NotFound();
             }
 
-            return users;
+            return PageService.CreatePaginatedResponse(userQuery.Page, userQuery.Limit, users);
         }
 
 
