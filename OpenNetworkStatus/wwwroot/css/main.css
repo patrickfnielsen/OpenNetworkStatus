@@ -64,6 +64,59 @@ strong, .title {
     color: #fff;
 }
 
+.component-container.two-columns {
+    overflow: hidden;
+}
+
+.component-container.two-columns .component-container {
+    width: 50%;
+    float: left;
+    border-bottom-width: 1px;
+    border-right-width: 1px;
+    border-left-width: 0px !important;
+    border-top-width: 0px !important;
+}
+
+.component-container.two-columns .component-container:nth-child(odd) {
+    border-left-width: 1px !important;
+}
+
+.component-container.two-columns .component-container:first-child, .component-container.two-columns .component-container:nth-child(2) {
+    border-top-width: 1px !important;
+}
+
+.component-container.two-columns .component-container:first-child {
+    border-radius: 4px 0 0 0 !important;
+    -moz-border-radius: 4px 0 0 0 !important;
+    -webkit-border-radius: 4px 0 0 0 !important;
+    -o-border-radius: 4px 0 0 0 !important;
+    -ms-border-radius: 4px 0 0 0 !important;
+}
+
+.component-container.two-columns .component-container:nth-child(2) {
+    border-radius: 0 4px 0 0 !important;
+    -moz-border-radius: 0 4px 0 0 !important;
+    -webkit-border-radius: 0 4px 0 0 !important;
+    -o-border-radius: 0 4px 0 0 !important;
+    -ms-border-radius: 0 4px 0 0 !important;
+}
+
+.component-container.two-columns .component-container:nth-last-child(2):nth-child(odd) {
+    border-radius: 0 0 0 4px !important;
+    -moz-border-radius: 0 0 0 4px !important;
+    -webkit-border-radius: 0 0 0 4px !important;
+    -o-border-radius: 0 0 0 4px !important;
+    -ms-border-radius: 0 0 0 4px !important;
+}
+
+.component-container.two-columns .component-container:nth-last-child(1):nth-child(even) {
+    border-radius: 0 0 4px 0 !important;
+    -moz-border-radius: 0 0 4px 0 !important;
+    -webkit-border-radius: 0 0 4px 0 !important;
+    -o-border-radius: 0 0 4px 0 !important;
+    -ms-border-radius: 0 0 4px 0 !important;
+}
+
 .component-container, .metric-container, .incident-container {
     width: 100%;
     float: none;
