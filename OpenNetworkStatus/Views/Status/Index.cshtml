@@ -7,7 +7,7 @@
 
 <partial name="Partial/_SiteStatus" model="@Model.SiteStatus" />
 
-<div id="components" class="component-container @(SiteOptions.Value.TwoColumns == true ? "two-columns" : "" )">
+<div id="components" class="component-container @(SiteOptions.Value.Layout.TwoColumns == true ? "two-columns" : "" )">
     @foreach (var component in Model.Components)
     {
         <partial name="Partial/_Component" model="component" />

@@ -11,7 +11,6 @@ namespace OpenNetworkStatus.Data.QueryObjects
             return queryable
                 .Where(x => x.MetricId == metricId && x.CreatedAt >= DateTime.UtcNow.AddDays(-day))
                 .OrderBy(x => x.CreatedAt);
-
         }
     }
 }

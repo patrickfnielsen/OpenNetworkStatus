@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace OpenNetworkStatus.Models.Options
 {
     public class SiteOptions
@@ -8,10 +6,10 @@ namespace OpenNetworkStatus.Models.Options
 
         public bool EnableSwagger { get; set; } = false;
 
-        public bool TwoColumns { get; set; } = false;
-        
-        public CorsOptions Cors { get; set; }
-        
-        public JwtOptions Jwt { get; set; }
+        public LayoutOptions Layout { get; set; } = new LayoutOptions();
+
+        public CorsOptions Cors { get; set; } = new CorsOptions();
+
+        public JwtOptions Jwt { get; set; } = new JwtOptions();
     }
 }
