@@ -3,7 +3,7 @@
         Array.prototype.last = function(){
             return this[this.length - 1];
         };
-    }
+    }   
     
     function getColor(name) {
         let style = getComputedStyle(document.documentElement);
@@ -65,11 +65,12 @@ Status.Metric = (function () {
         allMetrics.forEach(item => {
             let metricId = item.attributes["data-metric-id"].value;
             let metricSuffix = item.attributes["data-metric-suffix"].value;
+            let decimalPlaces = item.attributes["data-metric-decimal-places"].value;
 
             item.setAttribute("data-metric-timespan", newTimespan);
             timespan = newTimespan;
 
-            refreshData(charts[metricId], metricId, metricSuffix);
+            refreshData(charts[metricId], metricId, metricSuffix, decimalPlaces);
         });
     }
     
@@ -79,15 +80,16 @@ Status.Metric = (function () {
         metrics.forEach(item => {           
             let metricId = item.attributes["data-metric-id"].value;
             let metricSuffix = item.attributes["data-metric-suffix"].value;
+            let decimalPlaces = item.attributes["data-metric-decimal-places"].value;
 
             let renderContext = item.querySelectorAll("[data-metric-chart]")[0];
             let chart = renderChart(renderContext, metricId, metricSuffix);
 
-            refreshData(chart, metricId, metricSuffix);
+            refreshData(chart, metricId, metricSuffix, decimalPlaces);
 
             //Refresh data every minutes
             let timer = setInterval(() => {
-                refreshData(chart, metricId, metricSuffix);
+                refreshData(chart, metricId, metricSuffix, decimalPlaces);
             }, 60 * 1000)
 
             charts[metricId] = chart;
@@ -309,7 +311,7 @@ Status.Metric = (function () {
         });
     }
     
-    function refreshData(chart, metricId, metricSuffix) {
+    function refreshData(chart, metricId, metricSuffix, decimalPlaces) {
         url = generateMetricApiUrl(metricId);
 
         fetch(url)
@@ -321,10 +323,10 @@ Status.Metric = (function () {
                 dataset.data = [];
 
                 result.forEach(dataPoint => {
-                    dataset.data.push({x: moment.utc(dataPoint.created_at), y: dataPoint.value});
+                    dataset.data.push({ x: moment.utc(dataPoint.created_at), y: dataPoint.value?.toFixed(decimalPlaces) });
                 });
 
-                if(dataset.data.length > 0) {              
+                if(dataset.data.length > 0) {
                     updateLastValue(metricId, dataset.data.last().y, metricSuffix);
                     chart.update();
                 }
@@ -341,9 +343,15 @@ Status.Metric = (function () {
     }
     
     function updateLastValue(metricId, newValue, metricSuffix) {
+        if (newValue !== null) {
+            newValue = newValue + " " + metricSuffix;
+        } else {
+            newValue = "N/A";
+        }
+
         let items = document.querySelectorAll("[data-metric-last-value='" + metricId + "']");
         items.forEach(item => {
-            item.innerHTML = newValue + " " + metricSuffix;
+            item.innerHTML = newValue;
         });
     }
 

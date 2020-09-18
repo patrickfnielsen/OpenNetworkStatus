@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using OpenNetworkStatus.Data;
@@ -9,9 +10,10 @@ using OpenNetworkStatus.Data;
 namespace OpenNetworkStatus.Data.Migrations
 {
     [DbContext(typeof(StatusDataContext))]
-    partial class StatusDataContextModelSnapshot : ModelSnapshot
+    [Migration("20200914160725_ControlVisibility")]
+    partial class ControlVisibility
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -191,7 +193,7 @@ namespace OpenNetworkStatus.Data.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("MetricProviderType")
-                        .HasColumnType("integer");
+                        .HasColumnType("text");
 
                     b.Property<int>("Position")
                         .HasColumnType("integer");
