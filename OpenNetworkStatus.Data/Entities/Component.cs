@@ -15,5 +15,7 @@ namespace OpenNetworkStatus.Data.Entities
         public string Title { get; set; }
         
         public string Description { get; set; }
+
+        public bool Display { get; set; }
     }
 }

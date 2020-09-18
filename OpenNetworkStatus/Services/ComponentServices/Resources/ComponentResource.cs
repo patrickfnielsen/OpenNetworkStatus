@@ -15,7 +15,9 @@ namespace OpenNetworkStatus.Services.ComponentServices.Resources
         public string Title { get; set; }
         
         public string Description { get; set; }
-        
+
+        public bool Display { get; set; }
+
         public ComponentStatus Status { get; set; }
 
         public DateTime CreatedAt { get; set; }
@@ -29,6 +31,7 @@ namespace OpenNetworkStatus.Services.ComponentServices.Resources
                 Id = component.Id,
                 Title = component.Title,
                 Description = component.Description,
+                Display = component.Display,
                 Status = component.Status,
                 GroupId = component.ComponentGroupId,
                 Position = component.Position,

@@ -24,6 +24,7 @@ namespace OpenNetworkStatus.Services.ComponentGroupServices.Handlers
                 Name = request.Title,
                 Position = request.Position,
                 ExpandOption = request.ExpandOption,
+                Display = request.Display,
             };
             
             _dataContext.ComponentGroups.Add(group);

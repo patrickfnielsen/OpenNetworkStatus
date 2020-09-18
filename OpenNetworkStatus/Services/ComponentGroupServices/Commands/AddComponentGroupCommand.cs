@@ -17,5 +17,7 @@ namespace OpenNetworkStatus.Services.ComponentGroupServices.Commands
         public ComponentGroupOptions ExpandOption { get; set; }
 
         public int Position { get; set; }
+
+        public bool Display { get; set; }
     }
 }

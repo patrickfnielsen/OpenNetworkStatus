@@ -27,6 +27,7 @@ namespace OpenNetworkStatus.Services.ComponentGroupServices.Handlers
                 Id = request.Id,
                 Name = request.Title,
                 Position = request.Position,
+                Display = request.Display,
                 ExpandOption = request.ExpandOption
             };
             
