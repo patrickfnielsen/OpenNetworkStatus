@@ -47,7 +47,7 @@ namespace OpenNetworkStatus.Services.MetricServices.Handlers
                 {
                     MetricId = metricId,
                     CreatedAt = now.AddDays(-day).AddSeconds(i * interval).RoundToNearest(TimeSpan.FromSeconds(interval)),
-                    Value = 0
+                    Value = -1
                 }).ToList();
 
             return currentDataPoints.Union(nullDataPoints).OrderBy(x => x.CreatedAt).ToList();

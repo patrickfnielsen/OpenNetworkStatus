@@ -12,7 +12,7 @@ namespace OpenNetworkStatus.Services.MetricServices.Resources
         public static DataPointResource FromDataPoint(DataPoint data)
         {
             double? value = null;
-            if (data.Value != 0)
+            if (data.Value != -1)
             {
                 value = data.Value;
             }
