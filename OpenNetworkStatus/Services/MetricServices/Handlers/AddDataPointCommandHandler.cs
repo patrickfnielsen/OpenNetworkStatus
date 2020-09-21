@@ -32,7 +32,7 @@ namespace OpenNetworkStatus.Services.MetricServices.Handlers
             //If a datapoint already exists at that interval, replace the value with the new value
             //Else insert a new datapoint
             var createdAt = (request.CreatedAt ?? DateTime.UtcNow).RoundToNearest(TimeSpan.FromSeconds(30)); 
-            var existingDataPoint = await _dataContext.DataPoints.FirstOrDefaultAsync(x => x.CreatedAt == createdAt);
+            var existingDataPoint = await _dataContext.DataPoints.FirstOrDefaultAsync(x => x.CreatedAt == createdAt && x.MetricId == request.MetricId);
             if (existingDataPoint != null)
             {
                 existingDataPoint.Value = request.Value;
