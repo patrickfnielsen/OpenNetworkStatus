@@ -159,6 +159,7 @@ Status.Metric = (function () {
                         borderColor: chartLineColor,
                         pointRadius: 0,
                         fill: false,
+                        spanGaps: true,
                         lineTension: 0.1,
                         borderWidth: 2,
                         data: []
