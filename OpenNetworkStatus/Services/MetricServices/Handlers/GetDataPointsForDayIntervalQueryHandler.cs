@@ -61,7 +61,7 @@ namespace OpenNetworkStatus.Services.MetricServices.Handlers
             {
                 return x.CreatedAt.RoundToNearest(TimeSpan.FromSeconds(interval));
             })
-            .Select(g => new DataPoint { MetricId = metricId, CreatedAt = g.Key, Value = g.Average(s => s.Value) })
+            .Select(g => new DataPoint { MetricId = metricId, CreatedAt = g.Key, Value = g.Max(s => s.Value) })
             .ToList();
         }
     }
