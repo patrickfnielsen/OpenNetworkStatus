@@ -13,7 +13,7 @@ It will run a Postgresql database, and an instance of OpenNetworkStatus on *loca
 On every new install, a user will be created with the username ***admin*** and password ***password***, the first thing you should do is to change this password to something else.
 See the API section for how to change the password.
 
-All POST/PUT requests - and GET requests to the authentication endpoint - should be authorized with a JWT token in the authorization header.
+All POST/PUT requests - and GET requests to the user endpoint - should be authorized with a JWT token in the authorization header.
 
 ## Metric Providers:
 The project currently only comes with 1 build in provider: DataDog. 
