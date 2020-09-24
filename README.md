@@ -74,8 +74,7 @@ For full api documentation, please see the swagger endpoint at /swagger
 For basic authentication and password change, examples are given below.
 
 ## Authentication: Login
-Login and retrive the JWT token used for subsequent requests to authenticate.
-
+**Description:** Login and retrive the JWT token used for subsequent requests to authenticate.
 **Authentication:** No
 ### Request
 `POST /api/v1/authentication/login`
@@ -92,8 +91,7 @@ Login and retrive the JWT token used for subsequent requests to authenticate.
     }
 
 ## Authentication: Change Password
-To change the password you can use the following endpoint. 
-
+**Description:** Allows updating user information, including changing the password.
 **Authentication:** Yes
 ### Request
 `POST /api/v1/users/<user_id>`
