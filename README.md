@@ -27,6 +27,7 @@ However an open source admin page is in development and will be linked here once
 
 ## Settings
 The settings can be set in *appsettings.json*, and should follow the structure as below:
+
     {
         "site": {
             "name": "OpenNetworkStatus",    // Site name
@@ -54,11 +55,17 @@ The settings can be set in *appsettings.json*, and should follow the structure a
 
 
 It's also possible to overwrite all the settings using enviroment variables, here's a few examples:
+
     CUSTOMCONNSTR_default="Host=172.16.0.2;Database=status;Username=network-status;Password=sarn3JIH@mip"
-    SITE__CORS__Origins__0": "http://localhost:8080",
-    SITE__EnableSwagger": "true",
-    SITE__JWT__IssuerSigningKey="secret_key_here",
-    SITE__JWT__ValidAudience="status.example.com",
+
+    SITE__CORS__Origins__0": "http://localhost:8080"
+
+    SITE__EnableSwagger": "true"
+
+    SITE__JWT__IssuerSigningKey="secret_key_here"
+
+    SITE__JWT__ValidAudience="status.example.com"
+
     SITE__JWT__ValidIssuer="status.example.com"
 
 
