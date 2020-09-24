@@ -15,7 +15,7 @@ See the API section for how to change the password.
 
 All POST/PUT requests - and GET requests to the user endpoint - should be authorized with a JWT token in the authorization header.
 
-## Metric Providers:
+## Metric Providers
 The project currently only comes with 1 build in provider: DataDog. 
 
 Custom providers are supported as they can post datapoints to the API, for additional information on custom providers please checkout the swagger documentation.
