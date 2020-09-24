@@ -75,6 +75,7 @@ For basic authentication and password change, examples are given below.
 
 ## Authentication: Login
 **Description:** Login and retrive the JWT token used for subsequent requests to authenticate.
+
 **Authentication:** No
 ### Request
 `POST /api/v1/authentication/login`
@@ -92,6 +93,7 @@ For basic authentication and password change, examples are given below.
 
 ## Authentication: Change Password
 **Description:** Allows updating user information, including changing the password.
+
 **Authentication:** Yes
 ### Request
 `POST /api/v1/users/<user_id>`
