@@ -56,7 +56,7 @@ The settings can be set in *appsettings.json*, and should follow the structure a
 
 It's also possible to overwrite all the settings using enviroment variables, here's a few examples:
 
-    CUSTOMCONNSTR_default="Host=172.16.0.2;Database=status;Username=network-status;Password=sarn3JIH@mip"
+    CUSTOMCONNSTR_default="Host=localhost;Database=status;Username=network-status;Password=random-password"
 
     SITE__CORS__Origins__0": "http://localhost:8080"
 
