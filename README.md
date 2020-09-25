@@ -20,6 +20,17 @@ The project currently only comes with 1 build in provider: DataDog.
 
 Custom providers are supported as they can post datapoints to the API, for additional information on custom providers please checkout the swagger documentation.
 
+To use the build in metric providers, you need to set `"metric_provider_type": "datadog"` to the provider name, for posting your own metrics use "custom".
+
+Additionally if using a build in provider, you need to set `"external_metric_identifier": ""`, for usage please check under the provider.
+
+### Provider: Datadog
+The identifier would be a query like this: "avg:docker.cpu.usage{app:app_name}". 
+
+If you already have a graph in datadog you can select the "json" tab, and select the query. 
+
+**Note** the query is only the "q" node, it will look something like this `"q": "avg:docker.cpu.usage{app:app_name}"`
+
 ## Admin GUI
 The project does not come with any admin interface as it was developed to be primarily used from other systems.
 
