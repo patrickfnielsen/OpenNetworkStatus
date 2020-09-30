@@ -25,7 +25,7 @@ To use the build in metric providers, you need to set `"metric_provider_type": "
 Additionally if using a build in provider, you need to set `"external_metric_identifier": ""`, for usage please check under the provider.
 
 ### Provider: Datadog
-The identifier would be a query like this: "avg:docker.cpu.usage{app:app_name}". 
+The identifier would be a query like this `"avg:docker.cpu.usage{app:app_name}"`. 
 
 If you already have a graph in datadog you can select the "json" tab, and select the query. 
 
@@ -34,7 +34,7 @@ If you already have a graph in datadog you can select the "json" tab, and select
 ## Admin GUI
 The project does not come with any admin interface as it was developed to be primarily used from other systems.
 
-However an open source admin page is in development and will be linked here once it's production ready.
+However an open source admin page, based on Vue3 can be found here: [OpenNetworkStatusAdmin](https://github.com/patrickfnielsen/OpenNetworkStatusAdmin)
 
 ## Settings
 The settings can be set in *appsettings.json*, and should follow the structure as below:
@@ -68,15 +68,10 @@ The settings can be set in *appsettings.json*, and should follow the structure a
 It's also possible to overwrite all the settings using enviroment variables, here's a few examples:
 
     CUSTOMCONNSTR_default="Host=localhost;Database=status;Username=network-status;Password=random-password"
-
     SITE__CORS__Origins__0": "http://localhost:8080"
-
     SITE__EnableSwagger": "true"
-
     SITE__JWT__IssuerSigningKey="secret_key_here"
-
     SITE__JWT__ValidAudience="status.example.com"
-
     SITE__JWT__ValidIssuer="status.example.com"
 
 
