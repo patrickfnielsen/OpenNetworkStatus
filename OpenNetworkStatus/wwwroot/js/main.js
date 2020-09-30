@@ -344,10 +344,10 @@ Status.Metric = (function () {
     }
     
     function updateLastValue(metricId, newValue, metricSuffix) {
-        if (newValue !== null) {
+        if (newValue !== undefined) {
             newValue = newValue + " " + metricSuffix;
         } else {
-            newValue = "N/A";
+            newValue = "";
         }
 
         let items = document.querySelectorAll("[data-metric-last-value='" + metricId + "']");
