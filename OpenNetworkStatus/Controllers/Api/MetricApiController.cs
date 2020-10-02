@@ -103,8 +103,15 @@ namespace OpenNetworkStatus.Controllers.Api
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<DataPointResource>>> GetDataPointsAsync([FromRoute]GetDataPointsForLastDayQuery dataPointQuery)
+        public async Task<ActionResult<IEnumerable<DataPointResource>>> GetDataPointsAsync([FromRoute] int metricId)
         {
+            var dataPointQuery = new GetDataPointsForDayIntervalQuery
+            {
+                MetricId = metricId,
+                Days = 1,
+                Interval = 300
+            };
+
             var datapointResources = await _mediator.Send(dataPointQuery);
             if (datapointResources == null)
             {
@@ -118,8 +125,15 @@ namespace OpenNetworkStatus.Controllers.Api
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<DataPointResource>>> GetDataPointsForLastWeekAsync([FromRoute]GetDataPointsForLastSevenDaysQuery dataPointQuery)
+        public async Task<ActionResult<IEnumerable<DataPointResource>>> GetDataPointsForLastWeekAsync([FromRoute]int metricId)
         {
+            var dataPointQuery = new GetDataPointsForDayIntervalQuery
+            {
+                MetricId = metricId,
+                Days = 7,
+                Interval = 1800
+            };
+
             var datapointResources = await _mediator.Send(dataPointQuery);
             if (datapointResources == null)
             {

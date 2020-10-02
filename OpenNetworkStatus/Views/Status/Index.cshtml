@@ -7,15 +7,21 @@
 
 <partial name="Partial/_SiteStatus" model="@Model.SiteStatus" />
 
-<div id="components" class="component-container @(SiteOptions.Value.TwoColumns == true ? "two-columns" : "" )">
+<div id="components" class="component-container @(SiteOptions.Value.Layout.TwoColumns == true ? "two-columns" : "" )">
     @foreach (var component in Model.Components)
     {
-        <partial name="Partial/_Component" model="component" />
+        @if(component.Display)
+        {
+            <partial name="Partial/_Component" model="component" />
+        }
     }
 
     @foreach (var component in Model.ComponentGroups)
     {
-        <partial name="Partial/_ComponentGroup" model="component" />
+        @if(component.Display)
+        {
+            <partial name="Partial/_ComponentGroup" model="component" />
+        }
     }
 </div>
 
@@ -31,7 +37,10 @@
     <div class="metric-container">
         @foreach (var metric in Model.Metrics)
         {
-            <partial name="Partial/_Metric" model="metric" />
+            @if(metric.Display)
+            {
+                <partial name="Partial/_Metric" model="metric" />
+            }
         }
     </div>
 }

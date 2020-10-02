@@ -41,13 +41,16 @@
 
 
     <ItemGroup>
-      <Folder Include="Services\Authentication\Resources\" />
-      <Folder Include="Services\Authentication\Commands\" />
-      <Folder Include="Services\Authentication\Handlers\" />
-      <Folder Include="Services\Authentication\Queries\" />
-      <Folder Include="Services\IncidentServices\Commands\" />
-      <Folder Include="Services\IncidentServices\Handlers\" />
-      <Folder Include="Services\IncidentServices\Queries\" />
       <Folder Include="Views\Incident\" />
+      <Folder Include="Services\MetricProviders\" />
+      <Folder Include="Services\Authentication\" />
+      <Folder Include="Services\Behaviors\" />
+      <Folder Include="Services\ComponentGroupServices\" />
+      <Folder Include="Services\ComponentServices\" />
+      <Folder Include="Services\IncidentServices\" />
+      <Folder Include="Services\MetricProviders\" />
+      <Folder Include="Services\MetricServices\" />
+      <Folder Include="Services\PageServices\" />
+      <Folder Include="Services\StatusServices\" />
     </ItemGroup>
 </Project>

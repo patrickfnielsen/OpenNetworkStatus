@@ -23,6 +23,7 @@ namespace OpenNetworkStatus.Services.ComponentServices.Handlers
             {
                 Title = request.Title,
                 Description = request.Description,
+                Display = request.Display,
                 Status = request.Status,
                 Position = request.Position,
                 ComponentGroupId = request.GroupId

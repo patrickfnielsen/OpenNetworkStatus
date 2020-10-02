@@ -14,5 +14,8 @@ namespace OpenNetworkStatus.Data.Entities
         public ComponentGroupOptions ExpandOption { get; set; }
         
         public List<Component> Components { get; set; }
+
+        public bool Display { get; set; }
+
     }
 }

@@ -4,7 +4,6 @@ using System.Text.Json.Serialization;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -19,6 +18,8 @@ using OpenNetworkStatus.Models.Options;
 using OpenNetworkStatus.Services;
 using OpenNetworkStatus.Services.Authentication;
 using OpenNetworkStatus.Services.Behaviors;
+using OpenNetworkStatus.Services.MetricProviders;
+using OpenNetworkStatus.Services.MetricProviders.Repository;
 using OpenNetworkStatus.Services.StatusServices;
 using Serilog;
 
@@ -54,9 +55,9 @@ namespace OpenNetworkStatus
             
             services.AddRouting(options => options.LowercaseUrls = true);
             services.AddApiVersioning();
-            
-            services.Configure<SiteOptions>(Configuration.GetSection("site"));
-            
+
+            ConfigureOptions(services);
+
             services.AddDbContext<StatusDataContext>(
                 options => options.UseNpgsql(
                     Configuration.GetConnectionString("default"), 
@@ -67,7 +68,18 @@ namespace OpenNetworkStatus
             ConfigureSwagger(services);
             ConfigureAuthentication(services);
             ConfigureDependencies(services);
+
+            services.AddHostedService<MetricProviderWorker>();
         }
+
+        private void ConfigureOptions(IServiceCollection services)
+        {
+            services.Configure<SiteOptions>(Configuration.GetSection("site"));
+
+            var providers = Configuration.GetSection("providers");
+            services.Configure<DataDogOptions>(providers.GetSection("datadog"));
+        }
+
 
         private void ConfigureSwagger(IServiceCollection services)
         {
@@ -154,6 +166,8 @@ namespace OpenNetworkStatus
             services.AddTransient<PasswordHasher>();
             services.AddTransient<IAuthenticationService, AuthenticationService>();
             services.AddTransient<ITokenManager, JwtTokenManager>();
+
+            services.AddTransient<IMetricProviderRepository, MetricProviderRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -16,7 +16,15 @@ namespace OpenNetworkStatus.Services.MetricServices.Commands
         public string Suffix { get; set; }
 
         public string Description { get; set; }
-        
+
+        public bool Display { get; set; }
+
+        public string MetricProviderType { get; set; }
+
+        public string ExternalMetricIdentifier { get; set; }
+
         public int Position { get; set; }
+
+        public int DecimalPlaces { get; set; } = 2;
     }
 }

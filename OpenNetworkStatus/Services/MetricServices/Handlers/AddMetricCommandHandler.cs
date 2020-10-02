@@ -23,8 +23,12 @@ namespace OpenNetworkStatus.Services.MetricServices.Handlers
             {
                 Title = request.Title,
                 Description = request.Description,
+                Display = request.Display,
                 Suffix = request.Suffix,
-                Position = request.Position
+                Position = request.Position,
+                DecimalPlaces = request.DecimalPlaces,
+                MetricProviderType = request.MetricProviderType.ToLower(),
+                ExternalMetricIdentifier = request.ExternalMetricIdentifier
             };
             
             _dataContext.Metrics.Add(metric);

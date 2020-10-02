@@ -12,7 +12,9 @@ namespace OpenNetworkStatus.Services.ComponentGroupServices.Resources
         public int Id { get; set; }
             
         public string Title { get; set; }
-        
+
+        public bool Display { get; set; }
+
         public ComponentGroupOptions ExpandOption { get; set; }
 
         public int Position { get; set; }
@@ -33,11 +35,12 @@ namespace OpenNetworkStatus.Services.ComponentGroupServices.Resources
             var components = group.Components != null ?
                 group.Components.Select(ComponentResource.FromComponent).ToList() : 
                 new List<ComponentResource>();
-            
+
             return new ComponentGroupResource
             {
                 Id = group.Id,
                 Title = group.Name,
+                Display = group.Display,
                 ExpandOption = group.ExpandOption,
                 Components = components,
                 Position = group.Position,

@@ -5,15 +5,21 @@ namespace OpenNetworkStatus.Services.MetricServices.Resources
 {
     public class DataPointResource
     {
-        public double Value { get; set; }
+        public double? Value { get; set; }
         
         public DateTime CreatedAt { get; set; }
         
         public static DataPointResource FromDataPoint(DataPoint data)
         {
+            double? value = null;
+            if (data.Value != -1)
+            {
+                value = data.Value;
+            }
+
             return new DataPointResource
             {
-                Value = data.Value,
+                Value = value,
                 CreatedAt = data.CreatedAt
             };
         }

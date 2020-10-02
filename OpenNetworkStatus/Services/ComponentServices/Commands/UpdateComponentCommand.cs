@@ -18,7 +18,9 @@ namespace OpenNetworkStatus.Services.ComponentServices.Commands
         public string Title { get; set; }
         
         public string Description { get; set; }
-        
+
+        public bool Display { get; set; }
+
         public int? GroupId { get; set; }
         
         public int Position { get; set; }

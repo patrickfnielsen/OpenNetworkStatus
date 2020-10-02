@@ -26,8 +26,12 @@ namespace OpenNetworkStatus.Services.MetricServices.Handlers
                 Id = request.Id,
                 Title = request.Title,
                 Description = request.Description,
+                Display = request.Display,
                 Suffix = request.Suffix,
-                Position = request.Position
+                Position = request.Position,
+                DecimalPlaces = request.DecimalPlaces,
+                MetricProviderType = request.MetricProviderType.ToLower(),
+                ExternalMetricIdentifier = request.ExternalMetricIdentifier,
             };
             
             _dataContext.Entry(metric).State = EntityState.Modified;

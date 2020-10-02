@@ -37,7 +37,10 @@
     <div class="component-children @(isGroupExpanded ? "is-active" : "")">
         @foreach (var component in Model.Components)
         {
-            <partial name="Partial/_InnerComponent" model="component"/>
+            @if(component.Display)
+            {
+                <partial name="Partial/_InnerComponent" model="component"/>
+            }
         }
     </div>
 </div>
